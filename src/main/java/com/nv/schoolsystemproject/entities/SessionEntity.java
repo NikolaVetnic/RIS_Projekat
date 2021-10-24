@@ -44,6 +44,7 @@ public class SessionEntity {
 	private String topic;
 	
 	@Column(name = "date", nullable = false)
+	@NotBlank(message = "Date must be provided.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	protected LocalDate date;
 	
