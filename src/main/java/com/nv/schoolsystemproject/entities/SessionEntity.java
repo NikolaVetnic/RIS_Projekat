@@ -44,7 +44,6 @@ public class SessionEntity {
 	private String topic;
 	
 	@Column(name = "date", nullable = false)
-	@NotBlank(message = "Date must be provided.")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	protected LocalDate date;
 	
@@ -56,4 +55,14 @@ public class SessionEntity {
 	
 	@Version
 	private Integer version;
+	
+	@Override
+	public String toString() {
+		return String.format("%s, %s %s [%s] : %s", 
+				lecture.getSubject().getName(), 
+				lecture.getTeacher().getLastName(), 
+				lecture.getTeacher().getFirstName(), 
+				date.toString(), 
+				topic);
+	}
 }

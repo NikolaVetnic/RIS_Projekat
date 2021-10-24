@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
 
+import com.nv.schoolsystemproject.entities.LectureEntity;
 import com.nv.schoolsystemproject.entities.SessionEntity;
 
 public interface SessionRepository extends CrudRepository<SessionEntity, Integer> {
 
 	Optional<SessionEntity> findByDate(LocalDate date);
+	Optional<SessionEntity> findByLectureAndDate(LectureEntity lecture, LocalDate date);
 }

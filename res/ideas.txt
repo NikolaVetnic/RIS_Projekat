@@ -1,31 +1,18 @@
+DBK 20211014 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 Izostanke ucenika treba vezati za cas, to si ti nazvao Predavan-
 je - u okviru tog entiteta dodati atribut kao sto je tema casa i
 datum odrzavanja. Datum ti svakako treba i za izostanke i kasni-
 je generisanje nekog izvestaja. Svaki nastavnik kad dodje na cas
 upise sta radi tog casa i ko je odsutan na tom casu.
 
-TODO: 
-1) implementirati dodavanje sesije za predavanje od strane nast-
-   avnika koji drzi predavanje
-2) implementirati unosenje izostanaka za sesiju od strane nasta-
-   vnika koji drzi predavanje
-
-
-
 Roditelju omoguciti da za svoje dete vidi izostanke i da u polju
 napomena unese opravdanje u vidu nekog teksta.
-
-TODO:
-1) pregled izostanaka za decu
-2) dodavanje komentara u izostanak
-
-
 
 Ono sto ce takodje trebati dodati su neki izvestaji koji se mogu
 generisati, ali to nece zahtevati dodatnu izmenu baze podataka.
 
 
-
+NPV GeneralNotes =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 *** Karton ucenika je nesto kao tabela prisustva kod mene u sko-
 li, naime ideja je da ucenik ima X predmeta i postoji odvojen k-
 arton za svaki koji izmedju ostalog sadrzi i izostanke - ukoliko

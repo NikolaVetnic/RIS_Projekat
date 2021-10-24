@@ -38,10 +38,10 @@ public class AbsenceEntity {
 	private Integer id;
 	
 	@Column(name = "note", nullable = false)
-	@Size(max = 100, message = "Note cannot be more than {max} characters long.")
+	@Size(max = 200, message = "Note cannot be more than {max} characters long.")
 	private String note;
 	
-	@Column(name = "date", nullable = false)
+	@Column(name = "date", nullable = false, unique = true)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
 	protected LocalDate date;
 	

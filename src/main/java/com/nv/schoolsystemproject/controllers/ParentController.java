@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nv.schoolsystemproject.controllers.dto.AbsenceDTO;
 import com.nv.schoolsystemproject.controllers.dto.ParentRegisterDTO;
 import com.nv.schoolsystemproject.controllers.util.RESTError;
+import com.nv.schoolsystemproject.entities.AbsenceEntity;
 import com.nv.schoolsystemproject.entities.EUserRole;
 import com.nv.schoolsystemproject.entities.ParentEntity;
 import com.nv.schoolsystemproject.entities.StudentEntity;
 import com.nv.schoolsystemproject.entities.UserEntity;
+import com.nv.schoolsystemproject.repositories.AbsenceRepository;
 import com.nv.schoolsystemproject.repositories.ParentRepository;
 import com.nv.schoolsystemproject.repositories.StudentRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
@@ -38,6 +41,7 @@ public class ParentController {
 	private final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
 
 	
+	@Autowired private AbsenceRepository absenceRepository;
 	@Autowired private ParentRepository parentRepository;
 	@Autowired private StudentRepository studentRepository;
 	@Autowired private UserRepository userRepository;
@@ -82,6 +86,18 @@ public class ParentController {
 		
 		return new ResponseEntity<>(user.getStudents().stream()
 				.map(StudentEntity::getGradeCards).collect(Collectors.toList()), HttpStatus.OK);
+	}
+	
+	
+	@RequestMapping(path = "/absences", method = RequestMethod.GET) 
+	public ResponseEntity<?> getAbsences() {
+		
+		ParentEntity user = (ParentEntity) getParent().getBody();
+		
+		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed children's grades.");
+		
+		return new ResponseEntity<>(user.getStudents().stream()
+				.map(s -> s.getGradeCards().stream().map(gc -> gc.getAbsences())).collect(Collectors.toList()), HttpStatus.OK);
 	}
 	
 	
@@ -175,6 +191,49 @@ public class ParentController {
 					student.getUsername() + " with parent " + parent.getUsername());
 			
 			return new ResponseEntity<>(parent, HttpStatus.OK);
+			
+		} catch (Exception e) {
+			return new ResponseEntity<RESTError>(
+					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+							"Internal server error. Error: " + e.getMessage()), 
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	
+	@RequestMapping(method = RequestMethod.PUT, value = "/absence/note/{absenceId}")
+	public ResponseEntity<?> addAbsenceNote(@PathVariable Integer absenceId, @RequestBody AbsenceDTO absenceDTO) {
+		
+		try {
+			
+			// check if absence exists
+			Optional<AbsenceEntity> absenceOpt = absenceRepository.findById(absenceId);
+			
+			if (!absenceOpt.isPresent())
+				return new ResponseEntity<RESTError>(
+						new RESTError(HttpStatus.NOT_FOUND.value(), "Absence not found."), HttpStatus.NOT_FOUND);
+			
+			AbsenceEntity absence = absenceOpt.get();
+			StudentEntity student = absence.getGradeCard().getStudent();
+			
+			// only admin and student's parent may input notes
+			boolean isAdmin = userServiceImpl.isAuthorizedAs(EUserRole.ADMIN);
+			boolean isParent = userServiceImpl.getLoggedInUsername().isPresent() && student.getParents().stream()
+					.map(p -> p.getUsername())
+					.collect(Collectors.toSet())
+					.contains(userServiceImpl.getLoggedInUsername().get());
+			
+			if (!isAdmin && !isParent)
+				return new ResponseEntity<RESTError>(
+						new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+			
+			absence.setNote(absenceDTO.getNote());
+			absenceRepository.save(absence);
+			
+			logger.info(userServiceImpl.getLoggedInUsername() + " : added note for " + student.getUsername() + 
+					" regarding absence from " + absence.getGradeCard().getLecture().getSubject().getName() + " made on " + absence.getDate());
+			
+			return new ResponseEntity<>(absence, HttpStatus.OK);
 			
 		} catch (Exception e) {
 			return new ResponseEntity<RESTError>(

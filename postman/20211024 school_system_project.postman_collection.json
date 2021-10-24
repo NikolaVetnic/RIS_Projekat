@@ -1,0 +1,1411 @@
+{
+	"info": {
+		"_postman_id": "0482ae51-fdc0-48da-b7a1-71cc0bfe73cb",
+		"name": "school_system_project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "registration",
+			"item": [
+				{
+					"name": "Register teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwODU0MTQsImV4cCI6MTYzNTA4NjAxNH0.DbDH7LKBtAEhCMGHgDzj23AL4mUzt-J47j7XD9EFLzj2MHnVWuPTCQhnrhMw82P3gN5vcOocfqZ0tJq07-zyxw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Marko\",\n    \"lastName\": \"Savic\",\n    \"email\": \"marsavic@dmi.pmf.uns.ac.rs\",\n    \"username\": \"marsavic\",\n    \"role\": \"TEACHER\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/registration/teachers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"registration",
+								"teachers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register admin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"role\": \"ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/registration/admins",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"registration",
+								"admins"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register parent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwOTM4MzYsImV4cCI6MTYzNTA5NDQzNn0.fKJJIH_Xd77swPpyqdyAWfV1n9Xpor2EtfX3yRHCC7R8rkEeuwb8GOY-0vjIqW_gXiASRoTib1nSQDWmtuEamw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Mama\",\n    \"lastName\": \"Arnautovic\",\n    \"email\": \"nikola.pacek.vetnic@gmail.com\",\n    \"username\": \"mama.arnautovic\",\n    \"role\": \"PARENT\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/registration/parents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"registration",
+								"parents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwOTM4MzYsImV4cCI6MTYzNTA5NDQzNn0.fKJJIH_Xd77swPpyqdyAWfV1n9Xpor2EtfX3yRHCC7R8rkEeuwb8GOY-0vjIqW_gXiASRoTib1nSQDWmtuEamw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"nikola.pajovic\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"role\": \"STUDENT\",\n    \"firstName\": \"Nikola\",\n    \"lastName\": \"Pajovic\",\n    \"jmbg\": \"0211218200054\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/registration/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"registration",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register class",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"classNo\": 3,\n    \"sectionNo\": 1,\n    \"generation\": 1999\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/classes/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"classes",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register subject",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwODU0MTQsImV4cCI6MTYzNTA4NjAxNH0.DbDH7LKBtAEhCMGHgDzj23AL4mUzt-J47j7XD9EFLzj2MHnVWuPTCQhnrhMw82P3gN5vcOocfqZ0tJq07-zyxw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Racunarska grafika 2\",\n    \"totalHours\": 26,\n    \"yearAccredited\": 2016\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/subjects/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"subjects",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register session",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWFyc2F2aWMiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYzNTA5Njk0OCwiZXhwIjoxNjM1MDk3NTQ4fQ.tTJBIji6X0DBmovf--IX2q4_W5SuZ-jw2PKDwZAL9OVnhoUULs8X1wg7KvEm3uPymuAoy0cv0jajzQllwyGzew",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"topic\": \"Minimalna distanca izmedju dve tacke\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/sessions/register/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"sessions",
+								"register",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register absence",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWFyc2F2aWMiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYzNTA5NzYxOCwiZXhwIjoxNjM1MDk4MjE4fQ.UQEz5Owr61JtLXIqHicOssO7W4tYo6-u_z5ppgfv_moatRtic3ZKZ_kZ8QqtxZF1ZrdocnAVFVLdxDaDX57U6w",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/sessions/absence/28/from/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"sessions",
+								"absence",
+								"28",
+								"from",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "connection",
+			"item": [
+				{
+					"name": "Connect student with class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/classes/insert/1/into/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"classes",
+								"insert",
+								"1",
+								"into",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Connect student with parent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwOTM4MzYsImV4cCI6MTYzNTA5NDQzNn0.fKJJIH_Xd77swPpyqdyAWfV1n9Xpor2EtfX3yRHCC7R8rkEeuwb8GOY-0vjIqW_gXiASRoTib1nSQDWmtuEamw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/insert/27/into/33",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"insert",
+								"27",
+								"into",
+								"33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Connect subject with teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwODU0MTQsImV4cCI6MTYzNTA4NjAxNH0.DbDH7LKBtAEhCMGHgDzj23AL4mUzt-J47j7XD9EFLzj2MHnVWuPTCQhnrhMw82P3gN5vcOocfqZ0tJq07-zyxw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"year\": 2003,\n    \"semester\": \"WINTER\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/lectures/register/3/into/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"lectures",
+								"register",
+								"3",
+								"into",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Connect student with lecture",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWFyc2F2aWMiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYzNTA5NDA5NiwiZXhwIjoxNjM1MDk0Njk2fQ.CRYifhFn82gu-fgIwoScME3Vc-rvzijHaYhvkYAUwHdYrmHS9PaFaY2IhOoN_7-9PP1xVCoow6qH3nktDoPmsg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/lectures/insert/28/into/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"lectures",
+								"insert",
+								"28",
+								"into",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Grade student in semester",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibS5taWthbGFja2kiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYyNzczMjc0MywiZXhwIjoxNjI3NzMzMzQzfQ.49y35cuK12yB3OKJmxe3F7gq88XuUjWOmO9rF-mA5L0Bjf5N2BtnLg8sKIv8gPy6mcLpVuExIubYrRvS1tFA_Q",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/lectures/grade/5/in/22/with/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"lectures",
+								"grade",
+								"5",
+								"in",
+								"22",
+								"with",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"item": [
+				{
+					"name": "ADMIN Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/login?username=admin&pwd=adMIN1234!",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "admin"
+								},
+								{
+									"key": "pwd",
+									"value": "adMIN1234!"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEACHER Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/login?username=marsavic&pwd=adMIN1234!",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "marsavic"
+								},
+								{
+									"key": "pwd",
+									"value": "adMIN1234!"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STUDENT Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/login?username=gile.arnautovic&pwd=adMIN1234!",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "gile.arnautovic"
+								},
+								{
+									"key": "pwd",
+									"value": "adMIN1234!"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/login?username=mama.arnautovic&pwd=adMIN1234!",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "mama.arnautovic"
+								},
+								{
+									"key": "pwd",
+									"value": "adMIN1234!"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get",
+			"item": [
+				{
+					"name": "ADMIN Get all logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2Mjc3MzI1ODAsImV4cCI6MTYyNzczMzE4MH0.SPPPxHwMVsx19UfuP5sE04Oq5bZ4RMTm53g_LBfzP_cLTprr1-xka5ZDOv1JhuT3paF85iN3BJXzfcI_5jfjkw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/admin/logs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"admin",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Get all users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MzUwOTQ2MzcsImV4cCI6MTYzNTA5NTIzN30.JWKFSL_qTgq9RD9Ys6VOSUX7Vw1wweTv7tTYxX3XYD0ZwbAoVqBEepsvaIK41BTaoXnPblkk_1niRoHl_VTsUA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/admin/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STUDENT Get all grades",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYm9qYW4uYm9qYW5pYyIsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwiaWF0IjoxNjI3NTQyMDk0LCJleHAiOjE2Mjc1NDI2OTR9.K8nI9IL8tOFTFhojCY-D_slhT2ovybgacuHHYXSnsikci40Bf2bP20k43rKDmVmKJOiJFJAtt_YztEflHTE38g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/student/grades",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"student",
+								"grades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STUDENT Get grades for subject",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYm9qYW4uYm9qYW5pYyIsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwiaWF0IjoxNjI3NTQyMjQyLCJleHAiOjE2Mjc1NDI4NDJ9.wje39CColzSyRLMM25moNQUGMoklDiMZDrznqFtQv4ghrwfM7fx2iGraccAwUeE6XI2oeuJbmOljnPBNxNfw4g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/student/grades/20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"student",
+								"grades",
+								"20"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "STUDENT Get self",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYm9qYW4uYm9qYW5pYyIsImF1dGhvcml0aWVzIjpbIlNUVURFTlQiXSwiaWF0IjoxNjI2MTkwNDAxLCJleHAiOjE2MjYxOTEwMDF9.ppF0Tnl7IgKQl33e0lfkriaU_SK6FhE63LKOtmcJYcXDQMg1siEmojLmUYyIzyrlveABpzPyNTpaBxvsnqv6hg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/student",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Get all children's grades",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWlsYW4ubWlsaWMiLCJhdXRob3JpdGllcyI6WyJQQVJFTlQiXSwiaWF0IjoxNjI3NzMyNjY4LCJleHAiOjE2Mjc3MzMyNjh9.avWw2LjruPIy0TyNrBrikbkCGmeBoJdYRVsAJYsd5I52ghLaCLDCP0ekqYWMaQp2qlG4D10qEijDY4bFNLq8iQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/grades",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"grades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Get children's grades for subject",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWlsYW4ubWlsaWMiLCJhdXRob3JpdGllcyI6WyJQQVJFTlQiXSwiaWF0IjoxNjI3NzMyNjY4LCJleHAiOjE2Mjc3MzMyNjh9.avWw2LjruPIy0TyNrBrikbkCGmeBoJdYRVsAJYsd5I52ghLaCLDCP0ekqYWMaQp2qlG4D10qEijDY4bFNLq8iQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/grades/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"grades",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Get all children's absences",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWFtYS5hcm5hdXRvdmljIiwiYXV0aG9yaXRpZXMiOlsiUEFSRU5UIl0sImlhdCI6MTYzNTEwODQyOSwiZXhwIjoxNjM1MTA5MDI5fQ.9FoUmWSh3cq5gqd2SlN5YDg0_5dQzaZ8Gl3W4FY0kmKL2lbTWyRZ4TXCUJU5cvOFthzkE84agczinMEMYxAjJw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/absences",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"absences"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Get self",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWlsYW4ubWlsaWMiLCJhdXRob3JpdGllcyI6WyJQQVJFTlQiXSwiaWF0IjoxNjI2MTkwMTA4LCJleHAiOjE2MjYxOTA3MDh9.ERGkiwUnqc1n7mrepnpAnFZikqM93O-xIWGT6jRg9YtMpU-y0UCWfMcktXqNCB4TobCL1wgf0ST3V29Jmb7jPA",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEACHER Get self",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibS5taWthbGFja2kiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYyNzczMjYzMCwiZXhwIjoxNjI3NzMzMjMwfQ.CWVLJf3qocD7RHmXE781zxKJhC8m80yuCyg7sjJZjkxJaC1evlAgMg030ciRg28aG1NMxxoTZHdBroIm1A6_ZQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/teacher",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"teacher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TEACHER Get grades",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibS5taWthbGFja2kiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYyNzczMjYzMCwiZXhwIjoxNjI3NzMzMjMwfQ.CWVLJf3qocD7RHmXE781zxKJhC8m80yuCyg7sjJZjkxJaC1evlAgMg030ciRg28aG1NMxxoTZHdBroIm1A6_ZQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/teacher/grades",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"teacher",
+								"grades"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "update",
+			"item": [
+				{
+					"name": "ADMIN Update subject",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTQ2NjcsImV4cCI6MTYyNjE5NTI2N30.Gz0gP-k0WPKkUFR6h-DbRyj5n_ptNgfrtmfJgNP7CsVSqX5d89WckOIVspODjp3M345ZCazFRHzaJa21vdlVJw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mathematics\",\n    \"totalHours\": 10,\n    \"yearAccredited\": 2016\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/subjects/update/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"subjects",
+								"update",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Update admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtMW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTUyNTksImV4cCI6MTYyNjE5NTg1OX0.y6iJc8T0HxyD5qGHiYAmRpM4z3Ok5fvIj12J8P-0F7rsBbcLf5ZI5L5GJAI_B-dWSvn3SMvA7jO8PlXGHv6BAA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"role\": \"ADMIN\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/admin/update/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"admin",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Update teacher",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTU2ODEsImV4cCI6MTYyNjE5NjI4MX0.CbeWBVYGwjQ8xHNZgPcm0C36yskx1Gvd_ijZeVS-CRaj3XbrthAq0d05IlkEqLea7NEr089Uyed89C3FrG9Vew",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Branka\",\n    \"lastName\": \"Branic\",\n    \"email\": \"b.branic@skola.com\",\n    \"username\": \"b.branic\",\n    \"role\": \"TEACHER\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/teacher/update/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"teacher",
+								"update",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Update student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTYwODEsImV4cCI6MTYyNjE5NjY4MX0.9eSKHTKW7VaGLPsM461Vt7Ho6SLfMSe7DsUH06OwMSB9lY-_ECeEOn2Hcr3FuFuAaBJ51ohmSsfzyp2dEw7gAg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"bojan.bojanic\",\n    \"password\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"confirmPassword\": \"$2a$10$f.G5JtGpu16X9p/bCPU9Ju8sKWFbJRcyCVnqJF1shFyAMpQI/GKE6\",\n    \"role\": \"STUDENT\",\n    \"firstName\": \"Bojan\",\n    \"lastName\": \"Bojanic\",\n    \"jmbg\": \"0111017770054\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/student/update/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"student",
+								"update",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Update parent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2Mjc1NDA1NTQsImV4cCI6MTYyNzU0MTE1NH0.I3XQUn9CjwcpdmttbGGwCW75gwHsfDow9VuRoDbEOhkBWaj_xKfhukeD_zDMaOiiAEGXK2XLJyWPvBw_-BwD7A",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Milan\",\n    \"lastName\": \"Milicic\",\n    \"email\": \"nikola.pacek.vetnic@gmail.com\",\n    \"username\": \"milan.milic\",\n    \"role\": \"PARENT\",\n    \"password\": \"adMIN1234!\",\n    \"confirmPassword\": \"adMIN1234!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/update/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"update",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Update grade",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYi5icmFuaWMiLCJhdXRob3JpdGllcyI6WyJURUFDSEVSIl0sImlhdCI6MTYyNjE5NzY4NSwiZXhwIjoxNjI2MTk4Mjg1fQ.9ufBbjtiiCd0KKlN6X-yygxX-pnBKYpRSDUxx0Orh5kEKszozQ68WyMRMCwah0UveNsWi6HwDBgFUkIjDcWBuQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/grade/update/10/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"grade",
+								"update",
+								"10",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PARENT Add absence note",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoibWFtYS5hcm5hdXRvdmljIiwiYXV0aG9yaXRpZXMiOlsiUEFSRU5UIl0sImlhdCI6MTYzNTEwOTUyNiwiZXhwIjoxNjM1MTEwMTI2fQ.Czj_Xx4j1LUYT05o5qW34sQ7rHvQ9yI4dVLf7-lTGKK5NyYoINiYRskDiRdpMFr-eFchdSS5TqC8KujxfGY0vQ",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"note\": \"Nije mogao da se probudi za prvi cas, hehe.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/absence/note/37",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"absence",
+								"note",
+								"37"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "delete",
+			"item": [
+				{
+					"name": "ADMIN Delete admin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/admin/13",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"admin",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Delete subject",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/subjects/14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"subjects",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Delete teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/teacher/15",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"teacher",
+								"15"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Delete student",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/student/16",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"student",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Delete parent",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/parents/17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"parents",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADMIN Delete grade",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJzb2Z0dGVrSldUIiwic3ViIjoiYWRtaW4iLCJhdXRob3JpdGllcyI6WyJBRE1JTiJdLCJpYXQiOjE2MjYxOTY2NTUsImV4cCI6MTYyNjE5NzI1NX0.nibaBvEWFR-1gbINznGLwwNFcXOZuqufE-UMfPtqQgaQwZoSMr2Wir9dLiJYF8gXUDUFevpUFoCYpEEgFE9fkg",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/project/grade/11",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"project",
+								"grade",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
