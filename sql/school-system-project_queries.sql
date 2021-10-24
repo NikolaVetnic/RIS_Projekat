@@ -14,6 +14,10 @@ select * from students;
 select * from subjects;
 select * from lectures;
 select * from sessions;
+select * from absences;
+select * from grade_cards;
+
+delete from sessions where id=41;
 
 select u.id, u.username, t.first_name, t.last_name
 from users u, teachers t
