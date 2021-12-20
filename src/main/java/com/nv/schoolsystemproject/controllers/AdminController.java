@@ -3,9 +3,13 @@ package com.nv.schoolsystemproject.controllers;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -20,11 +24,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nv.schoolsystemproject.controllers.dto.AdminRegisterDTO;
 import com.nv.schoolsystemproject.controllers.util.RESTError;
 import com.nv.schoolsystemproject.entities.AdminEntity;
 import com.nv.schoolsystemproject.entities.EUserRole;
+import com.nv.schoolsystemproject.entities.UserEntity;
 import com.nv.schoolsystemproject.repositories.AdminRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
 import com.nv.schoolsystemproject.services.UserServiceImpl;
@@ -48,42 +54,77 @@ public class AdminController {
 	
 	// =-=-=-= GET =-=-=-=
 	
+	@RequestMapping(path = "/home", method = RequestMethod.GET) 
+	public ModelAndView getHome(HttpServletRequest request) {
+		
+		ModelAndView mav = new ModelAndView("/admin/home");
+		
+		return mav;
+	}
+	
 	
 	@RequestMapping(path = "/users", method = RequestMethod.GET) 
-	public ResponseEntity<?> getAllUsers() {
+	public ModelAndView getAllUsers(HttpServletRequest request) {
+		
+//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+		
+		String path = "/admin/users";
 		
 		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+			path = "/admin/error";
+		
+		List<UserEntity> users = StreamSupport
+				  .stream(userRepository.findAll().spliterator(), false)
+				  .collect(Collectors.toList());
+		
+		request.setAttribute("users", users);
 		
 		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
 
-		return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+		// povratna vrednost verzije kada je radjen samo back
+		// return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
+		
+		ModelAndView mav = new ModelAndView(path);
+		
+		return mav;
 	}
 	
 	
 	@RequestMapping(path = "/logs", method = RequestMethod.GET)
-	public ResponseEntity<?> getLogs() throws IOException {
+	public ModelAndView getLogs(HttpServletRequest request) throws IOException {
+		
+//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+		
+		String path = "/admin/logs";
 		
 		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+			path = "/admin/error";
 		
 		BufferedReader in = new BufferedReader(
 				new FileReader("logs//spring-boot-logging.log"));
 		
+		List<String> lines = new ArrayList<String>();		
 		String line = null;
-		StringBuilder sb = new StringBuilder();
-		while ((line = in.readLine()) != null) {
-			sb.append(line);
-			sb.append("\n");
-		}
+
+		while ((line = in.readLine()) != null)
+			lines.add(line);
 		
 		in.close();
 		
+		request.setAttribute("logs", lines);
+		
 		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed logs.");
 		
-		return new ResponseEntity<>(sb.toString(), HttpStatus.OK);
+		// povratna vrednost verzije kada je radjen samo back
+		// return new ResponseEntity<>(sb.toString(), HttpStatus.OK);
+		
+		ModelAndView mav = new ModelAndView(path);
+		
+		return mav;
 	}
 	
 	
