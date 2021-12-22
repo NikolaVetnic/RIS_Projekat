@@ -77,61 +77,63 @@ public class UserLoginController {
 		
 		String path = "/index";
 		
-		for (UserEntity userEntity : users) {
-			if (userEntity.getUsername().equals(username) && Encryption.validatePassword(pwd, userEntity.getPassword())) {
-
-				String token = getJWTToken(userEntity);
-				
-				UserLoginDTO userLoginDTO = new UserLoginDTO();
-				userLoginDTO.setUsername(username);
-				userLoginDTO.setToken(token);
-				
-				logger.info(userLoginDTO.getUsername() + " : logged in.");
-				
-				// povratna vrednost verzije kada je radjen samo back
-				// return new ResponseEntity<>(userLoginDTO, HttpStatus.OK);
-				
-				request.getSession().setAttribute("userLoginDTO", userLoginDTO);
-				request.setAttribute("userLoginMsg", "Ulogovani ste kao : " + username);
-				
-				// postaviti ulogovanog korisnika na nivo sesije, ulogu cu koristiti da postavim GrantedAuthority-e
-				EUserRole userRole = userRepository.findByUsername(username).get().getRole();
-				
-				// dodavanje autoriteta korisniku koga manuelno postavljam preko SecurityContext-a
-				Set<GrantedAuthority> authorities = new HashSet<>();
-				authorities.add(new SimpleGrantedAuthority(userRole.toString().toUpperCase()));
-				
-				// radim autentikaciju preko prosledjenih parametara
-				UsernamePasswordAuthenticationToken authReq = 
-						new UsernamePasswordAuthenticationToken(username, 
-								new BCryptPasswordEncoder().encode("password"), authorities);
-				
-				// postavljanje autentikacije
-				SecurityContext sc = SecurityContextHolder.getContext();
-				sc.setAuthentication(authReq);
-				
-				// stavljanje autentikacije na nivo sesije
-				HttpSession session = request.getSession(true);
-				session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
-				
-				// sanity check
-				System.out.printf("username : %s | role : %s | granted authority: %s \n", 
-						SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-						userRole,
-						SecurityContextHolder.getContext().getAuthentication().getAuthorities());				
-				
-				
-				// ZNAM da se ovako ne radi ali nazalost ne znam bolji nacin
-				ModelAndView mav = new ModelAndView("/" + userRole.toString().toLowerCase() + "/home");
-				
-				return mav;
+		if (!"".equals(request.getParameter("username")) && !"".equals(request.getParameter("pwd"))) {
+			for (UserEntity userEntity : users) {
+				if (userEntity.getUsername().equals(username) && Encryption.validatePassword(pwd, userEntity.getPassword())) {
+	
+					String token = getJWTToken(userEntity);
+					
+					UserLoginDTO userLoginDTO = new UserLoginDTO();
+					userLoginDTO.setUsername(username);
+					userLoginDTO.setToken(token);
+					
+					logger.info(userLoginDTO.getUsername() + " : logged in.");
+					
+					// povratna vrednost verzije kada je radjen samo back
+					// return new ResponseEntity<>(userLoginDTO, HttpStatus.OK);
+					
+					// postaviti ulogovanog korisnika na nivo sesije, ulogu cu koristiti da postavim GrantedAuthority-e
+					EUserRole userRole = userRepository.findByUsername(username).get().getRole();
+					
+					// dodavanje autoriteta korisniku koga manuelno postavljam preko SecurityContext-a
+					Set<GrantedAuthority> authorities = new HashSet<>();
+					authorities.add(new SimpleGrantedAuthority(userRole.toString().toUpperCase()));
+					
+					// radim autentikaciju preko prosledjenih parametara
+					UsernamePasswordAuthenticationToken authReq = 
+							new UsernamePasswordAuthenticationToken(username, 
+									new BCryptPasswordEncoder().encode("password"), authorities);
+					
+					// postavljanje autentikacije
+					SecurityContext sc = SecurityContextHolder.getContext();
+					sc.setAuthentication(authReq);
+					
+					// stavljanje autentikacije na nivo sesije
+					HttpSession session = request.getSession(true);
+					session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
+					
+					request.getSession().setAttribute("user", userRepository.findByUsername(username).get());
+					request.setAttribute("userLoginMsg", "Ulogovani ste kao : " + username);
+					
+					// sanity check
+					System.out.printf("username : %s | role : %s | granted authority: %s \n", 
+							SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+							userRole,
+							SecurityContextHolder.getContext().getAuthentication().getAuthorities());				
+					
+					
+					// ZNAM da se ovako ne radi ali nazalost ne znam bolji nacin
+					ModelAndView mav = new ModelAndView("/" + userRole.toString().toLowerCase() + "/home");
+					
+					return mav;
+				}
 			}
 		}
 		
 		// povratna vrednost verzije kada je radjen samo back
 		// return new ResponseEntity<>("Username and password do not match", HttpStatus.UNAUTHORIZED);
 		
-		request.setAttribute("userLoginMsg", "Korisnicko ime i lozinka moraju biti ispravni.");
+		request.setAttribute("userLoginMsg", "Korisnicko ime i lozinka moraju biti uneti i ispravni.");
 		
 		ModelAndView mav = new ModelAndView(path);
 		

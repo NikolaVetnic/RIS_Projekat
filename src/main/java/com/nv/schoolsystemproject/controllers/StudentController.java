@@ -188,7 +188,7 @@ public class StudentController {
 			
 			studentRepository.delete(student);
 			
-			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted studetn " + student.getUsername());
+			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted student " + student.getUsername());
 			
 			return new ResponseEntity<StudentEntity>(student, HttpStatus.OK);
 			

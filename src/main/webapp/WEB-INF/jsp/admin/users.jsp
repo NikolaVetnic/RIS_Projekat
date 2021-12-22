@@ -11,48 +11,101 @@
 </head>
 <body>
 
-	<h2 class="title2">ADMIN : Pregled svih korisnika</h2>
-	
-	<p>Ulogovani ste kao : ${ userLoginDTO.username } </p>
-	
-	<table>
-		<tr>
-			<th class="table_header">Ime</th>
-			<td width="10" />
-			<th class="table_header">Prezime</th>
-			<td width="10" />
-			<th class="table_header">JMBG</th>
-			<td width="10" />
-			<th class="table_header">Email</th>
-			<td width="10" />
-			<th class="table_header">Korisničko ime</th>
-			<td width="10" />
-			<th class="table_header">Uloga</th>
-		</tr>
+	<div class="sidenav">
+		<a href="/api/v1/project/admin/home">Glavna</a>
+		<a href="/api/v1/project/registration/home" class="sidenav-sel">Korisnici</a> 
+		<a href="/api/v1/project/subjects/home">Predmeti</a>
+		<a href="#">Opcija #3</a>
+		<a href="/api/v1/project/admin/logs">Pregled logova</a>
+		<br>
+		<a href="/">Izloguj se</a>
+	</div>
+
+	<div class="main">
+		<div class="header">
+			<h2 class="title2 p-class">ADMIN : Pregled korisnika</h2>
+			<p class="p-class">Ulogovani ste kao : <span class="username p-class">${ user.username } </span></p>
+		</div>
 		
-		<c:forEach items="${ users }" var="u">
+		<br />
+		
+		<table>
 			<tr>
-				<td class="table_cell"><c:if test="${ u.role != 'ADMIN'}">${ u.firstName }</c:if></td>
+				<th class="table_header">Ime</th>
 				<td width="10" />
-				<td class="table_cell"><c:if test="${ u.role != 'ADMIN'}">${ u.lastName }</c:if></td>
+				<th class="table_header">Prezime</th>
 				<td width="10" />
-				<td class="table_cell"><c:if test="${ u.role == 'STUDENT'}">${ u.jmbg }</c:if></td>
+				<th class="table_header">JMBG</th>
 				<td width="10" />
-				<td class="table_cell">
-					<c:if test="${ u.role == 'TEACHER' || u.role == 'PARENT'}">
-						<a href="mailto:${ u.email }">${ u.email }</a>
-					</c:if>
-				</td>
+				<th class="table_header">Email</th>
 				<td width="10" />
-				<td class="table_cell">${ u.username }</td>
+				<th class="table_header">Korisničko ime</th>
 				<td width="10" />
-				<td class="table_cell">${ u.role }</td>
+				<th class="table_header">Uloga</th>
 			</tr>
-		</c:forEach>	
+			
+			<c:forEach items="${ users }" var="u">
+				<tr>
+					<td class="table_cell"><c:if test="${ u.role != 'ADMIN'}">${ u.firstName }</c:if></td>
+					<td width="10" />
+					<td class="table_cell"><c:if test="${ u.role != 'ADMIN'}">${ u.lastName }</c:if></td>
+					<td width="10" />
+					<td class="table_cell"><c:if test="${ u.role == 'STUDENT'}">${ u.jmbg }</c:if></td>
+					<td width="10" />
+					<td class="table_cell">
+						<c:if test="${ u.role == 'TEACHER' || u.role == 'PARENT'}">
+							<a href="mailto:${ u.email }">${ u.email }</a>
+						</c:if>
+					</td>
+					<td width="10" />
+					<td class="table_cell">${ u.username }</td>
+					<td width="10" />
+					<td class="table_cell">
+						<c:if test="${ u.role == 'ADMIN' }">
+							administrator
+						</c:if>
+						<c:if test="${ u.role == 'PARENT' }">
+							roditelj
+						</c:if>
+						<c:if test="${ u.role == 'STUDENT' }">
+							učenik
+						</c:if>
+						<c:if test="${ u.role == 'TEACHER' }">
+							nastavnik
+						</c:if>
+					</td>
+					<td width="10" />
+					<td class="table_cell"><a href="/api/v1/project/admin/delete?idToDelete=${ u.id }">Obriši</a></td>
+					<td width="10" />
+					<td class="table_cell">
+						<c:if test="${ u.role == 'ADMIN' }">
+							<a href="/api/v1/project/update/update_admin?idToUpdate=${ u.id }">Ažuriraj</a>
+						</c:if>
+						<c:if test="${ u.role == 'PARENT' }">
+							<a href="/api/v1/project/update/update_parent?idToUpdate=${ u.id }">Ažuriraj</a>
+						</c:if>
+						<c:if test="${ u.role == 'STUDENT' }">
+							<a href="/api/v1/project/update/update_student?idToUpdate=${ u.id }">Ažuriraj</a>
+						</c:if>
+						<c:if test="${ u.role == 'TEACHER' }">
+							<a href="/api/v1/project/update/update_teacher?idToUpdate=${ u.id }">Ažuriraj</a>
+						</c:if>
+					</td>
+				</tr>
+			</c:forEach>	
+			
+		</table>
+		<br />
+		<span class="success">${ deleteSuccessMsg }</span>
+		<br />
+		<br />
+		<br />
 		
-	</table>
-	<br />
-	<a href="/api/v1/project/admin/home">Nazad na glavnu stranicu</a>
+	</div>
+	
+	<div class="footer">
+	  	School System Project @ Razvoj informacionih sistema, 2021.
+	</div>
 	
 </body>
 </html>

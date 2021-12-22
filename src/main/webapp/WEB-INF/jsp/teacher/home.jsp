@@ -13,7 +13,7 @@
 
 	<h2 class="title2">NASTAVNIK : Glavna stranica</h2>
 
-	<p>Ulogovani ste kao : <span class="username">${ userLoginDTO.username } </span></p>
+	<p>Ulogovani ste kao : <span class="username">${ user.username } </span></p>
 	
 	<ul>
 		<li><a href="/api/v1/project/teacher/grades">Pregled svih ocena</a></li>

@@ -52,12 +52,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		 */ 
 		
 		http.cors().and().csrf().disable()
-//				.addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
-				.authorizeRequests()
-				.antMatchers(HttpMethod.GET, "/").permitAll()
-				.antMatchers(HttpMethod.POST, "/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/api/v1/project/admin/**").hasAuthority("ADMIN")
-				.antMatchers(HttpMethod.GET, "/api/v1/project/teacher/**").hasAuthority("TEACHER");
-//				.anyRequest().authenticated();
+//			.addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
+			.authorizeRequests()
+			.antMatchers(HttpMethod.GET, "/").permitAll()
+			.antMatchers(HttpMethod.POST, "/**").permitAll() // ovo promeniti samo za login POST
+			.antMatchers(HttpMethod.GET, "/api/v1/project/admin/**").hasAuthority("ADMIN")
+			.antMatchers(HttpMethod.GET, "/api/v1/project/parent/**").hasAuthority("PARENT")
+			.antMatchers(HttpMethod.GET, "/api/v1/project/student/**").hasAuthority("STUDENT")
+			.antMatchers(HttpMethod.GET, "/api/v1/project/teacher/**").hasAuthority("TEACHER");
+//			.anyRequest().authenticated();
 	}
 }

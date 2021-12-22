@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -30,8 +32,22 @@ import com.nv.schoolsystemproject.controllers.dto.AdminRegisterDTO;
 import com.nv.schoolsystemproject.controllers.util.RESTError;
 import com.nv.schoolsystemproject.entities.AdminEntity;
 import com.nv.schoolsystemproject.entities.EUserRole;
+import com.nv.schoolsystemproject.entities.GradeCardEntity;
+import com.nv.schoolsystemproject.entities.GradeEntity;
+import com.nv.schoolsystemproject.entities.LectureEntity;
+import com.nv.schoolsystemproject.entities.ParentEntity;
+import com.nv.schoolsystemproject.entities.StudentEntity;
+import com.nv.schoolsystemproject.entities.SubjectEntity;
+import com.nv.schoolsystemproject.entities.TeacherEntity;
 import com.nv.schoolsystemproject.entities.UserEntity;
 import com.nv.schoolsystemproject.repositories.AdminRepository;
+import com.nv.schoolsystemproject.repositories.GradeCardRepository;
+import com.nv.schoolsystemproject.repositories.GradeRepository;
+import com.nv.schoolsystemproject.repositories.LectureRepository;
+import com.nv.schoolsystemproject.repositories.ParentRepository;
+import com.nv.schoolsystemproject.repositories.StudentRepository;
+import com.nv.schoolsystemproject.repositories.SubjectRepository;
+import com.nv.schoolsystemproject.repositories.TeacherRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
 import com.nv.schoolsystemproject.services.UserServiceImpl;
 import com.nv.schoolsystemproject.utils.UserCustomValidator;
@@ -45,6 +61,13 @@ public class AdminController {
 
 	
 	@Autowired private AdminRepository adminRepository;
+	@Autowired private GradeRepository gradeRepository;
+	@Autowired private GradeCardRepository gradeCardRepository;
+	@Autowired private LectureRepository lectureRepository;
+	@Autowired private ParentRepository parentRepository;
+	@Autowired private StudentRepository studentRepository;
+	@Autowired private SubjectRepository subjectRepository;
+	@Autowired private TeacherRepository teacherRepository;
 	@Autowired private UserRepository userRepository;
 
 	@Autowired private UserServiceImpl userServiceImpl;
@@ -81,7 +104,8 @@ public class AdminController {
 		
 		request.setAttribute("users", users);
 		
-		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all users.");
 
 		// povratna vrednost verzije kada je radjen samo back
 		// return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
@@ -117,7 +141,8 @@ public class AdminController {
 		
 		request.setAttribute("logs", lines);
 		
-		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed logs.");
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed logs.");
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed logs.");
 		
 		// povratna vrednost verzije kada je radjen samo back
 		// return new ResponseEntity<>(sb.toString(), HttpStatus.OK);
@@ -157,6 +182,7 @@ public class AdminController {
 		adminRepository.save(admin);
 		
 		logger.info(userServiceImpl.getLoggedInUsername() + " : updated admin " + admin.getUsername());
+//		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : updated admin " + admin.getUsername());
 		
 		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
@@ -170,31 +196,173 @@ public class AdminController {
 	// =-=-=-= DELETE =-=-=-=
 	
 	
-	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id) {
+//	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "/delete")
+	public ModelAndView delete(
+//			@PathVariable Integer id
+			HttpServletRequest request
+			) {
+		
+		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
+		UserEntity userEntity = userRepository.findById(idToDelete).get();
+		
+		switch (userEntity.getRole()) {
+			case ADMIN: 	deleteAdmin		(idToDelete, request); break;
+			case PARENT: 	deleteParent	(idToDelete, request); break;
+			case STUDENT: 	deleteStudent	(idToDelete, request); break;
+			case TEACHER: 	deleteTeacher	(idToDelete, request); break;
+		}
+		
+		return getModelAndViewToUsers(request);
+		
+//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+//		
+//		try {
+//		
+//			AdminEntity admin = adminRepository.findById(id).orElse(null);
+//			
+//			adminRepository.delete(admin);
+//			
+//			if (admin == null)
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Admin not found."), HttpStatus.NOT_FOUND);
+//			
+//			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted admin " + admin.getUsername());
+//			
+//			return new ResponseEntity<AdminEntity>(admin, HttpStatus.OK);
+//			
+//		} catch (Exception e) {
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error. Error: " + e.getMessage()), 
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+	}
+	
+	
+	private ModelAndView getModelAndViewToUsers(HttpServletRequest request) {
+		
+		String path = "/admin/users";
 		
 		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+			path = "/admin/error";
 		
-		try {
+		List<UserEntity> users = StreamSupport
+				  .stream(userRepository.findAll().spliterator(), false)
+				  .collect(Collectors.toList());
 		
-			AdminEntity admin = adminRepository.findById(id).orElse(null);
+		request.setAttribute("users", users);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all users.");
+		
+		ModelAndView mav = new ModelAndView(path);
+		
+		return mav;
+	}
+	
+	
+	private void deleteAdmin(Integer idToDelete, HttpServletRequest request) {
+		
+		// ne zelim da brisem nultog korisnika
+		if (idToDelete == 0)
+			return;
+		
+		AdminEntity admin = adminRepository.findById(idToDelete).get();
+		adminRepository.delete(admin);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted admin " + admin.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted admin " + admin.getUsername());
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Admin %s je uspešno obrisan!", 
+				admin.getUsername()));
+	}
+	
+	
+	private void deleteParent(Integer idToDelete, HttpServletRequest request) {
+		
+		ParentEntity parent = parentRepository.findById(idToDelete).get();
+		
+		for (StudentEntity s : parent.getStudents()) {
 			
-			adminRepository.delete(admin);
-			
-			if (admin == null)
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Admin not found."), HttpStatus.NOT_FOUND);
-			
-			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted admin " + admin.getUsername());
-			
-			return new ResponseEntity<AdminEntity>(admin, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error. Error: " + e.getMessage()), 
-					HttpStatus.INTERNAL_SERVER_ERROR);
+			s.getParents().remove(parent);
+			studentRepository.save(s);
 		}
+		
+		parentRepository.delete(parent);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted parent " + parent.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted parent " + parent.getUsername());
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Roditelj %s %s je uspešno obrisan!", 
+				parent.getFirstName(), parent.getLastName()));
+	}
+	
+	
+	private void deleteStudent(Integer idToDelete, HttpServletRequest request) {
+		
+		StudentEntity student = studentRepository.findById(idToDelete).get();
+		
+		for (ParentEntity p : student.getParents()) {
+			
+			p.getStudents().remove(student);
+			parentRepository.save(p);
+		}
+		
+		for (GradeCardEntity gc : student.getGradeCards()) {
+			
+			LectureEntity currLecture = gc.getLecture();
+			currLecture.getGradeCards().remove(gc);
+			lectureRepository.save(currLecture);
+			
+			for (GradeEntity g : gc.getGrades())
+				gradeRepository.delete(g);
+			
+			gradeCardRepository.delete(gc);
+		}
+		
+		studentRepository.delete(student);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted student " + student.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted student " + student.getUsername());
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Učenik %s %s je uspešno obrisan!", 
+				student.getFirstName(), student.getLastName()));
+	}
+	
+	
+	private void deleteTeacher(Integer idToDelete, HttpServletRequest request) {
+		
+		TeacherEntity teacher = teacherRepository.findById(idToDelete).get();
+		
+		for (LectureEntity l : teacher.getLectures()) {
+			
+			SubjectEntity currSubject = l.getSubject();
+			currSubject.getLectures().remove(l);
+			subjectRepository.save(currSubject);
+			
+			Set<GradeCardEntity> currGC = l.getGradeCards();
+			
+			Iterator<GradeCardEntity> it = currGC.iterator();
+			
+			while(it.hasNext()){
+				
+				GradeCardEntity gc = it.next();
+				
+				gc.setLecture(null);
+				gradeCardRepository.save(gc);
+			}
+			
+			lectureRepository.delete(l);
+		}
+		
+		teacherRepository.delete(teacher);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted teacher " + teacher.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted teacher " + teacher.getUsername());
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Nastavnik %s %s je uspešno obrisan!", 
+				teacher.getFirstName(), teacher.getLastName()));
 	}
 }

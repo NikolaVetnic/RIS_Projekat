@@ -27,7 +27,7 @@
 			<tr>
 				<td>
 					<br />
-					<input type="submit" value="      Login      " />
+					<input type="submit" value="      Prijavi se      " />
 				</td>
 			</tr>
 		</table>

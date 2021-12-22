@@ -1,8 +1,10 @@
 package com.nv.schoolsystemproject.controllers;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -16,21 +18,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nv.schoolsystemproject.controllers.dto.LectureRegisterDTO;
 import com.nv.schoolsystemproject.controllers.util.RESTError;
+import com.nv.schoolsystemproject.entities.ESemester;
 import com.nv.schoolsystemproject.entities.EUserRole;
 import com.nv.schoolsystemproject.entities.GradeCardEntity;
 import com.nv.schoolsystemproject.entities.GradeEntity;
 import com.nv.schoolsystemproject.entities.LectureEntity;
 import com.nv.schoolsystemproject.entities.ParentEntity;
+import com.nv.schoolsystemproject.entities.SessionEntity;
 import com.nv.schoolsystemproject.entities.StudentEntity;
 import com.nv.schoolsystemproject.entities.SubjectEntity;
 import com.nv.schoolsystemproject.entities.TeacherEntity;
+import com.nv.schoolsystemproject.entities.UserEntity;
 import com.nv.schoolsystemproject.models.EmailObject;
 import com.nv.schoolsystemproject.repositories.GradeCardRepository;
 import com.nv.schoolsystemproject.repositories.GradeRepository;
 import com.nv.schoolsystemproject.repositories.LectureRepository;
+import com.nv.schoolsystemproject.repositories.SessionRepository;
 import com.nv.schoolsystemproject.repositories.StudentRepository;
 import com.nv.schoolsystemproject.repositories.SubjectRepository;
 import com.nv.schoolsystemproject.repositories.TeacherRepository;
@@ -48,6 +55,7 @@ public class LectureController {
 	@Autowired GradeRepository gradeRepository;
 	@Autowired GradeCardRepository gradeCardRepository;
 	@Autowired LectureRepository lectureRepository;
+	@Autowired SessionRepository sessionRepository;
 	@Autowired StudentRepository studentRepository;
 	@Autowired SubjectRepository subjectRepository;
 	@Autowired TeacherRepository teacherRepository;
@@ -57,54 +65,134 @@ public class LectureController {
 	@Autowired private EmailService emailService;
 	
 	
-	@RequestMapping(method = RequestMethod.PUT, value = "/register/{subjectId}/into/{teacherId}")
-	public ResponseEntity<?> connectSubjectWithTeacher(@PathVariable Integer subjectId, @PathVariable Integer teacherId, @Valid @RequestBody LectureRegisterDTO lectureDTO, BindingResult result) {
+	// =-=-=-= GET : ROUTES
+	
+	
+	@RequestMapping(path = "/list", method = RequestMethod.GET) 
+	public ModelAndView getAllLectures(HttpServletRequest request) {
 		
-		try {
+		request.setAttribute("lectures", (List<LectureEntity>) lectureRepository.findAll());
 		
-			Optional<SubjectEntity> subjectOpt = subjectRepository.findById(subjectId);
-			Optional<TeacherEntity> teacherOpt = teacherRepository.findById(teacherId);
-			
-			if (!subjectOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Subject not found."), HttpStatus.NOT_FOUND);
-			
-			if (!teacherOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Teacher not found."), HttpStatus.NOT_FOUND);
-			
-			SubjectEntity subject = subjectOpt.get();
-			TeacherEntity teacher = teacherOpt.get();
-			
-			Optional<LectureEntity> lectureOpt = lectureRepository.findBySubjectAndTeacher(subject, teacher);
-			
-			if (lectureOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.BAD_REQUEST.value(), "Lecture already exists."), HttpStatus.BAD_REQUEST);
-			
-			LectureEntity lecture = new LectureEntity();
-			lecture.setSubject(subject);
-			lecture.setTeacher(teacher);
-			lecture.setYear(lectureDTO.getYear());
-			lecture.setSemester(lectureDTO.getSemester());
-			lectureRepository.save(lecture);
-			
-			subject.getLectures().add(lecture);
-			subjectRepository.save(subject);
-			
-			teacher.getLectures().add(lecture);
-			teacherRepository.save(teacher);
-			
-			logger.info("Lecture #" + lecture.getId() + " : created.");
-			
-			return new ResponseEntity<>(lecture, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-							"Internal server error. Error: " + e.getMessage()), 
-					HttpStatus.INTERNAL_SERVER_ERROR);
+		ModelAndView mav = new ModelAndView("/admin/lectures/list");
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/register_lecture", method = RequestMethod.GET) 
+	public ModelAndView getSubjectsRegister(HttpServletRequest request) {
+		
+		request.getSession().setAttribute("teachers", (List<TeacherEntity>) teacherRepository.findAll());
+		request.getSession().setAttribute("subjects", (List<SubjectEntity>) subjectRepository.findAll());
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/register");
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/update_lecture", method = RequestMethod.GET) 
+	public ModelAndView getUpdateLecture(HttpServletRequest request) {
+
+		Integer idToUpdate = Integer.parseInt((String) request.getParameter("idToUpdate"));
+		LectureEntity lectureToUpdate = lectureRepository.findById(idToUpdate).get();
+
+		request.getSession().setAttribute("lectureToUpdate", lectureToUpdate);
+		
+		request.setAttribute("teachers", (List<TeacherEntity>) teacherRepository.findAll());
+		request.setAttribute("subjects", (List<SubjectEntity>) subjectRepository.findAll());
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/update");
+		
+		return mav;
+	}
+	
+	
+	// =-=-=-= PUT
+	
+	
+//	@RequestMapping(method = RequestMethod.PUT, value = "/register/{subjectId}/into/{teacherId}")
+	@RequestMapping(method = RequestMethod.POST, value = "/register")
+	public ModelAndView connectSubjectWithTeacher(
+//			@PathVariable Integer subjectId, @PathVariable Integer teacherId, @Valid @RequestBody LectureRegisterDTO lectureDTO, BindingResult result
+			HttpServletRequest request) {
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/register");
+		
+		StringBuilder error = new StringBuilder();
+		boolean foundError = verifyLecture(request, error);
+		
+		if (foundError) {
+			request.setAttribute("lectureRegisterMsg", error.toString());
+			return mav;
 		}
+		
+		SubjectEntity subject = subjectRepository.findById(Integer.parseInt(request.getParameter("idSubject"))).get();
+		TeacherEntity teacher = teacherRepository.findById(Integer.parseInt(request.getParameter("idTeacher"))).get();
+		
+		ESemester semester = request.getParameter("semester").toUpperCase().equals("WINTER") ? ESemester.WINTER : ESemester.SUMMER;
+		
+		int year = Integer.parseInt(request.getParameter("year"));
+		
+		LectureEntity lecture = new LectureEntity();
+		
+		lecture.setSubject(subject);
+		lecture.setTeacher(teacher);
+		lecture.setSemester(semester);
+		lecture.setYear(year);
+		
+		lectureRepository.save(lecture);
+		
+		logger.info("Lecture #" + lecture.getId() + " : created.");
+		request.setAttribute("lectureRegisterSuccessMsg", "Predavanje je uspešno registrovano!");
+		
+		return mav;
+		
+//		try {
+//		
+//			Optional<SubjectEntity> subjectOpt = subjectRepository.findById(subjectId);
+//			Optional<TeacherEntity> teacherOpt = teacherRepository.findById(teacherId);
+//			
+//			if (!subjectOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Subject not found."), HttpStatus.NOT_FOUND);
+//			
+//			if (!teacherOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Teacher not found."), HttpStatus.NOT_FOUND);
+//			
+//			SubjectEntity subject = subjectOpt.get();
+//			TeacherEntity teacher = teacherOpt.get();
+//			
+//			Optional<LectureEntity> lectureOpt = lectureRepository.findBySubjectAndTeacher(subject, teacher);
+//			
+//			if (lectureOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.BAD_REQUEST.value(), "Lecture already exists."), HttpStatus.BAD_REQUEST);
+//			
+//			LectureEntity lecture = new LectureEntity();
+//			lecture.setSubject(subject);
+//			lecture.setTeacher(teacher);
+//			lecture.setYear(lectureDTO.getYear());
+//			lecture.setSemester(lectureDTO.getSemester());
+//			lectureRepository.save(lecture);
+//			
+//			subject.getLectures().add(lecture);
+//			subjectRepository.save(subject);
+//			
+//			teacher.getLectures().add(lecture);
+//			teacherRepository.save(teacher);
+//			
+//			logger.info("Lecture #" + lecture.getId() + " : created.");
+//			
+//			return new ResponseEntity<>(lecture, HttpStatus.OK);
+//			
+//		} catch (Exception e) {
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+//							"Internal server error. Error: " + e.getMessage()), 
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 	}
 	
 	
@@ -307,5 +395,126 @@ public class LectureController {
 							"Internal server error. Error: " + e.getMessage()), 
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	
+	// =-=-=-= UPDATE =-=-=-=
+	
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/update")
+	public ModelAndView update(
+//			@PathVariable Integer id, @Valid @RequestBody SubjectRegisterDTO subjectDTO, BindingResult result
+			HttpServletRequest request
+			) {
+		
+		LectureEntity lecture = (LectureEntity) request.getSession().getAttribute("lectureToUpdate");
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/update");
+		
+		StringBuilder error = new StringBuilder();
+		boolean foundError = verifyLecture(request, error);
+		
+		SubjectEntity subject = subjectRepository.findById(Integer.parseInt(request.getParameter("idSubject"))).get();
+		TeacherEntity teacher = teacherRepository.findById(Integer.parseInt(request.getParameter("idTeacher"))).get();
+		
+		ESemester semester = request.getParameter("semester").toUpperCase().equals("WINTER") ? ESemester.WINTER : ESemester.SUMMER;
+		
+		int year = Integer.parseInt(request.getParameter("year"));
+		
+		if (foundError) {
+
+			request.setAttribute("lectureUpdateMsg", error.toString());
+
+			request.setAttribute("teachers", (List<TeacherEntity>) teacherRepository.findAll());
+			request.setAttribute("subjects", (List<SubjectEntity>) subjectRepository.findAll());
+			
+			return mav;
+		}
+		
+		lecture.setSubject(subject);
+		lecture.setTeacher(teacher);
+		lecture.setSemester(semester);
+		lecture.setYear(year);
+		
+		lectureRepository.save(lecture);
+
+		request.setAttribute("lectureUpdateMsg", error.toString());
+
+		request.getSession().setAttribute("lectureToUpdate", lecture);
+		request.setAttribute("teachers", (List<TeacherEntity>) teacherRepository.findAll());
+		request.setAttribute("subjects", (List<SubjectEntity>) subjectRepository.findAll());
+		
+		logger.info("Lecture #" + lecture.getId() + " : updated.");
+		request.setAttribute("lectureUpdateSuccessMsg", "Predavanje je uspešno ažurirano!");
+		
+		return mav;
+	}
+	
+	
+	// =-=-=-= DELETE =-=-=-=
+	
+	
+//	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
+	@RequestMapping(method = RequestMethod.GET, value = "/delete")
+	public ModelAndView delete(
+//			@PathVariable Integer id
+			HttpServletRequest request
+			) {
+		
+		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
+		LectureEntity lecture = lectureRepository.findById(idToDelete).get();
+		
+		for (SessionEntity s : lecture.getSessions())
+			sessionRepository.delete(s);
+		
+		for (GradeCardEntity g : lecture.getGradeCards())
+			gradeCardRepository.delete(g);
+		
+//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted lecture " + lecture.getId());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				String.format(" : deleted lecture %s held by %s %s.", lecture.getSubject().getName(), lecture.getTeacher().getFirstName(), lecture.getTeacher().getLastName()));
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Predavanje predmeta %s koje je držao %s %s je uspešno obrisano!", 
+				lecture.getSubject().getName(), lecture.getTeacher().getFirstName(), lecture.getTeacher().getLastName()));
+		
+		lectureRepository.delete(lecture);
+		
+		request.setAttribute("lectures", (List<LectureEntity>) lectureRepository.findAll());
+		
+		return new ModelAndView("/admin/lectures/list");
+	}
+	
+	
+	private boolean verifyLecture(HttpServletRequest request, StringBuilder error) {
+		
+		boolean foundError = false;
+		
+		try {			
+			Integer.parseInt(request.getParameter("idSubject"));
+		} catch (NumberFormatException e) {
+			error.append("Morate odabrati predmet. ");
+			foundError = true;
+		}
+		
+		try {
+			Integer.parseInt(request.getParameter("idTeacher"));
+		} catch (NumberFormatException e) {
+			error.append("Morate odabrati nastavnika. ");
+			foundError = true;
+		}
+		
+		if (request.getParameter("semester") == null) {
+			error.append("Morate odabrati semestar. ");
+			foundError = true;
+		}
+		
+		try {
+			Integer.parseInt(request.getParameter("year"));
+		} catch (NumberFormatException e) {
+			error.append("Morate uneti celobrojnu vrednost.");
+			foundError = true;
+		}
+		
+		return foundError;
 	}
 }
