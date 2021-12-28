@@ -51,6 +51,8 @@
 					<td width="10" />
 					<td class="table_cell"><a href="/api/v1/project/classes/all_students?idToUpdate=${ s.id }">Ažuriranje učenika</a></td>
 					<td width="10" />
+					<td class="table_cell"><a href="/api/v1/project/classes/delete?idToDelete=${ s.id }">Obriši</a></td>
+					<td width="10" />
 				</tr>
 			</c:forEach>	
 			

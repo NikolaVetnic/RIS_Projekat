@@ -1,28 +1,14 @@
-Elem, projekat koji predlazem je implementacija web aplikacije koja treba da predstavlja (pojednostavljeni) 
-elektronski dnevnik za potrebe osnovne skole. Odrednica "pojednostavljeni" se odnosi na cinjenicu da se nisam 
-konsultovao ni sa kim iz oblasti obrazovanja u kojoj bi se takva aplikacija koristila, tako da ce odredjeni 
-detalji upotrebe i realizacije moguce biti slobodnije interpretirani.
-
-Osnovne funkcionalnosti obuhvatale bi:
-upis ocena (samo nastavnici),
-pregled i pretraga ocena (nastavnici za sve svoje ucenike, roditelji za svoju decu, ucenici za sebe),
-logovanje korisnika sa odgovarajucim ulogama.
-
-Dakle, kada se korisnik uloguje u sistem sa svojim user/pass informacijama (koristice se tokeni) korisnik moze 
-da koristi odredjene funkcionalnosti na osnovu svoje uloge: ako je ucenik moze da vidi svoje ocene, ako je 
-roditelj gleda ocene svoje dece (takodje roditelj dobija mail kada mu neko od dece dobije ocenu), ako je 
-nastavnik moze da pregleda/upisuje/menja ocene ali i da ih pretrazuje po razlicitim kriterijumima (koliko mi 
-vreme dozvoli), a ako je korisnik admin ima potpunu kontrolu nad sistemom (brisanje, dodavanje, i slicno). 
-Sve uneseno cuva se u bazi. 
-
-Od entiteta tu bi bili nastavnik, predmet, ucenik, ocena, korisnik (nadklasa za sve osobe u sistemu), roditelj, 
-admin, eventualno jos neki entiteti koji bi mi posluzili u modeliranju strukture skole - razredi, kartoni ucenika, 
-i slicno. Bila bi naravno izmodelovana odredjena ogranicenja tipa nastavnik predaje samo odredjenim ucenicima, 
-njima daje i pregleda ocene, ucenik moze imati vise ocena za odredjeni predmet i odredjenog nastavnika (znaci veza 
-ucenika sa nekom presecnom tabelom Nastavnik-Predmet), roditelji su povezani sa odredjenim brojem ucenika (svojom 
-decom) dok ucenik ima maksimalno dva roditelja (drzimo se tradicije), itd.
-
-Za razliku od MIS projekta sada cu koristiti ORM, odnosno definisacu entitete u Springu i onda generisati tabele 
-u bazi - zato vam saljem dijagram entitet klasa, u principu baza bi trebala isto tako da izgleda. Posto mi trenutno 
-backend ide mnogo bolje od front-a sve ovo cu vam demonstrirati preko Postmana, osim ako deo zahteva nije i da se 
-uradi front end u kom slucaju cu se dodatno preznojati ali cu uraditi nesto (skromno).
+CHECKLIST:
+ 1) UPIS OCENA (admin)												URADJENO
+ 2) UPIS OCENA (nastavnik)
+ 3) PREGLED OCENA PO KRITERIJUMIMA (nastavnik za svoje ucenike)
+ 4) UPIS OCENA (nastavnik za svoje ucenike)
+ 5) MENJANJE OCENA (nastavnik za svoje ucenike)
+ 6) PREGLED OCENA (roditelj za svoje dete)
+ 7) PREGLED OCENA (ucenik za sebe)
+ 8) LOGIN (admin)													URADJENO
+ 9) LOGIN (teacher)													URADJENO
+10) LOGIN (student)													URADJENO
+11) LOGIN (parent)													URADJENO
+12) MAIL PO UPISU OCENE (roditelj prima mail)						URADJENO
+13) ...pogledati ideas.txt

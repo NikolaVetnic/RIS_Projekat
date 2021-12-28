@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nv.schoolsystemproject.entities.GradeCardEntity;
+import com.nv.schoolsystemproject.entities.LectureEntity;
 import com.nv.schoolsystemproject.entities.SchoolClassEntity;
+import com.nv.schoolsystemproject.entities.SessionEntity;
 import com.nv.schoolsystemproject.entities.StudentEntity;
 import com.nv.schoolsystemproject.entities.UserEntity;
 import com.nv.schoolsystemproject.repositories.SchoolClassRepository;
@@ -113,6 +116,8 @@ public class SchoolClassController {
 	
 	
 	private void getStudentsAndSchoolClassIntoRequest(HttpServletRequest request) {
+		
+		SchoolClassEntity selectedSchoolClass = (SchoolClassEntity) request.getSession().getAttribute("selectedSchoolClass");
 		
 		List<StudentEntity> students = ((List<StudentEntity>) studentRepository.findAll())
 				.stream()
@@ -274,9 +279,35 @@ public class SchoolClassController {
 		request.setAttribute("updateSuccessMsg", String.format("Učenik %s %s je uspešno uklonjen iz odeljenja %s!", 
 				student.getFirstName(), student.getLastName(), schoolClass.getFormattedString()));
 		
-		request.setAttribute("students", (List<StudentEntity>) studentRepository.findAll());
-		
 		return mav;
+	}
+	
+	
+	// =-=-=-= DELETE =-=-=-=
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/delete")
+	public ModelAndView delete(
+//			@PathVariable Integer id
+			HttpServletRequest request
+			) {
+		
+		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
+		SchoolClassEntity schoolClass = schoolClassRepository.findById(idToDelete).get();
+		
+		for (StudentEntity s : schoolClass.getStudents())
+			s.setSchoolClass(null);
+		
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				String.format(" : deleted school class %s.", schoolClass.getFormattedString()));
+		
+		request.setAttribute("deleteSuccessMsg", String.format("Razred %s je uspešno obrisan!", schoolClass.getFormattedString()));
+		
+		schoolClassRepository.delete(schoolClass);
+		
+		request.setAttribute("schoolClasses", (List<SchoolClassEntity>) schoolClassRepository.findAll());
+		
+		return new ModelAndView("/admin/school_class/list");
 	}
 	
 

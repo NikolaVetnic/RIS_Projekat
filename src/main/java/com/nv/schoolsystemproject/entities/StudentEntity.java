@@ -57,7 +57,7 @@ public class StudentEntity extends UserEntity {
 	private SchoolClassEntity schoolClass;
 	
 	@JsonBackReference
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
         name = "studentParent", 
         joinColumns = { @JoinColumn(name = "studentId") }, 
@@ -68,4 +68,13 @@ public class StudentEntity extends UserEntity {
 	@JsonBackReference
 	@OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
 	protected Set<GradeCardEntity> gradeCards = new HashSet<>();
+	
+	public boolean isTakingLecture(Integer id) {
+		
+		for (GradeCardEntity gradeCard : gradeCards)
+			if (gradeCard.getLecture().getId() == id)
+				return true;
+		
+		return false;
+	}
 }

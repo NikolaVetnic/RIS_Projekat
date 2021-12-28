@@ -1,8 +1,11 @@
 package com.nv.schoolsystemproject.controllers;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -71,9 +74,38 @@ public class LectureController {
 	@RequestMapping(path = "/list", method = RequestMethod.GET) 
 	public ModelAndView getAllLectures(HttpServletRequest request) {
 		
-		request.setAttribute("lectures", (List<LectureEntity>) lectureRepository.findAll());
+		request.getSession().setAttribute("lectures", (List<LectureEntity>) lectureRepository.findAll());
 		
 		ModelAndView mav = new ModelAndView("/admin/lectures/list");
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/all_students", method = RequestMethod.GET) 
+	public ModelAndView getAllStudents(HttpServletRequest request) {
+		
+		LectureEntity selectedLecture = lectureRepository
+				.findById(Integer.parseInt((String) request.getParameter("idToUpdate"))).get();
+		request.getSession().setAttribute("selectedLecture", selectedLecture);
+		
+		getStudentsAndLectureIntoRequest(request);
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/students");
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/grade_student", method = RequestMethod.GET) 
+	public ModelAndView getStudentToGrade(HttpServletRequest request) {
+		
+		request.getSession().setAttribute("studentToGrade", studentRepository
+				.findById(Integer.parseInt((String) request.getParameter("idToUpdate"))).get());
+		
+		request.getSession().setAttribute("intArray5", new int[] { 1, 2, 3, 4, 5 });
+		
+		ModelAndView mav = new ModelAndView("/admin/lectures/grade_student");
 		
 		return mav;
 	}
@@ -105,6 +137,19 @@ public class LectureController {
 		ModelAndView mav = new ModelAndView("/admin/lectures/update");
 		
 		return mav;
+	}
+	
+	
+	private void getStudentsAndLectureIntoRequest(HttpServletRequest request) {
+		
+		LectureEntity selectedLecture = (LectureEntity) request.getSession().getAttribute("selectedLecture");
+		
+		List<StudentEntity> students = ((List<StudentEntity>) studentRepository.findAll())
+				.stream()
+				.sorted(Comparator.comparingInt(StudentEntity::getId))
+				.collect(Collectors.toList());
+		
+		request.setAttribute("students", students);
 	}
 	
 	
@@ -196,153 +241,239 @@ public class LectureController {
 	}
 	
 	
-	@RequestMapping(method = RequestMethod.PUT, value = "/insert/{studentId}/into/{lectureId}")
-	public ResponseEntity<?> connectStudentWithLecture(@PathVariable Integer studentId, @PathVariable Integer lectureId) {
+	@RequestMapping(method = RequestMethod.GET, value = "/enroll_or_remove_student")
+	public ModelAndView connectStudentWithLecture(
+//			@PathVariable Integer studentId, @PathVariable Integer lectureId
+			HttpServletRequest request) {
 		
-		try {
+		Integer idToUpdate = Integer.parseInt((String) request.getParameter("idToUpdate"));
+		StudentEntity student = studentRepository.findById(idToUpdate).get();
 		
-			Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
-			Optional<LectureEntity> lectureOpt = lectureRepository.findById(lectureId);
+		LectureEntity selectedLecture = (LectureEntity) request.getSession().getAttribute("selectedLecture");
+		
+		if (student.isTakingLecture(selectedLecture.getId())) {
 			
-			if (!studentOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Student not found."), HttpStatus.NOT_FOUND);
+			GradeCardEntity gradeCard = student.getGradeCards().stream()
+					.filter(gce -> gce.getLecture().getId() == selectedLecture.getId())
+					.findFirst().get();
 			
-			if (!lectureOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Lecture not found."), HttpStatus.NOT_FOUND);			
+			gradeCardRepository.delete(gradeCard);
 			
-			StudentEntity student = studentOpt.get();
-			LectureEntity lecture = lectureOpt.get();
+			request.setAttribute("updateSuccessMsg", "Brisanje uspelo!");
 			
-			Optional<GradeCardEntity> gradeCardOpt = gradeCardRepository.findByLectureAndStudent(lecture, student);
-			
-			if (gradeCardOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Such grade card already exists."), HttpStatus.NOT_FOUND);
+		} else {
 			
 			GradeCardEntity gradeCard = new GradeCardEntity();
-			gradeCard.setLecture(lecture);
+			
+			gradeCard.setLecture(selectedLecture);
 			gradeCard.setStudent(student);
 			gradeCard.setPresent(0);
 			gradeCard.setAbsent(0);
+			
 			gradeCardRepository.save(gradeCard);
 			
-			student.getGradeCards().add(gradeCard);
-			studentRepository.save(student);
-			
-			lecture.getGradeCards().add(gradeCard);
-			lectureRepository.save(lecture);
-			
-			logger.info("Lecture #" + lecture.getId() + " : student " + student.getUsername() + " added.");
-			
-			return new ResponseEntity<>(lecture, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-							"Internal server error. Error: " + e.getMessage()), 
-					HttpStatus.INTERNAL_SERVER_ERROR);
+			request.setAttribute("updateSuccessMsg", "Dodavanje uspelo!");
 		}
+		
+		return new ModelAndView("/admin/lectures/list");
+		
+		
+//		try {
+//		
+//			Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
+//			Optional<LectureEntity> lectureOpt = lectureRepository.findById(lectureId);
+//			
+//			if (!studentOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Student not found."), HttpStatus.NOT_FOUND);
+//			
+//			if (!lectureOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Lecture not found."), HttpStatus.NOT_FOUND);			
+//			
+//			StudentEntity student = studentOpt.get();
+//			LectureEntity lecture = lectureOpt.get();
+//			
+//			Optional<GradeCardEntity> gradeCardOpt = gradeCardRepository.findByLectureAndStudent(lecture, student);
+//			
+//			if (gradeCardOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Such grade card already exists."), HttpStatus.NOT_FOUND);
+//			
+//			GradeCardEntity gradeCard = new GradeCardEntity();
+//			gradeCard.setLecture(lecture);
+//			gradeCard.setStudent(student);
+//			gradeCard.setPresent(0);
+//			gradeCard.setAbsent(0);
+//			gradeCardRepository.save(gradeCard);
+//			
+//			student.getGradeCards().add(gradeCard);
+//			studentRepository.save(student);
+//			
+//			lecture.getGradeCards().add(gradeCard);
+//			lectureRepository.save(lecture);
+//			
+//			logger.info("Lecture #" + lecture.getId() + " : student " + student.getUsername() + " added.");
+//			
+//			return new ResponseEntity<>(lecture, HttpStatus.OK);
+//			
+//		} catch (Exception e) {
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+//							"Internal server error. Error: " + e.getMessage()), 
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 	}
 	
 	
-	@RequestMapping(method = RequestMethod.PUT, value = "/grade/{studentId}/in/{lectureId}/with/{grade}")
-	public ResponseEntity<?> gradeStudentInLecture(
-			@PathVariable Integer studentId, @PathVariable Integer lectureId, @PathVariable Integer grade) {					
+	@RequestMapping(method = RequestMethod.POST, value = "/grade")
+	public ModelAndView gradeStudentInLecture(
+//			@PathVariable Integer studentId, @PathVariable Integer lectureId, @PathVariable Integer grade
+			HttpServletRequest request) {
 		
-		try {
-			
-			// if grade is invalid return
-			if (!(0 < grade && grade <= 5))
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.BAD_REQUEST.value(), "Invalid grade."), HttpStatus.BAD_REQUEST);
+		LectureEntity selectedLecture = (LectureEntity) request.getSession().getAttribute("selectedLecture");
+		StudentEntity student = (StudentEntity) request.getSession().getAttribute("studentToGrade");
 		
-			Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
-			Optional<LectureEntity> lectureOpt = lectureRepository.findById(lectureId);
+		Integer grade = Integer.parseInt((String) request.getParameter("grade_num"));
 		
-			// if student is not found return
-			if (!studentOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Student not found."), HttpStatus.NOT_FOUND);
+		System.out.println(student + " :::: " + grade);
+		
+		GradeCardEntity gradeCard = gradeCardRepository.findByLectureAndStudent(selectedLecture, student).get();
+		
+		// create new grade
+		GradeEntity newGrade = new GradeEntity();
+		newGrade.setDate(LocalDate.now());
+		newGrade.setGrade(grade);
+		newGrade.setGradeCard(gradeCard);
+		gradeRepository.save(newGrade);
+		
+		gradeCard.getGrades().add(newGrade);
+		gradeCardRepository.save(gradeCard);
+		
+		logger.info("Lecture #" + selectedLecture.getId() + " : student " + student.getUsername() + " graded " + grade);
+		
+		// !!! OVDE IDE POZIVANJE METODA KOJI SALJE EMAIL RODITELJU
+		
+		EmailObject emailObject = new EmailObject();
+		emailObject.setSubject(String.format("%s %s - nova ocena iz predmeta '%s'", 
+				student.getLastName(), student.getFirstName(), 
+				newGrade.getGradeCard().getLecture().getSubject().getName()));
+		
+		emailObject.setText(String.format("Vaše dete je danas ocenjeno ocenom %d.", newGrade.getGrade()));
+		
+		if (!student.getParents().isEmpty()) {
 			
-			// if lecture is not found return
-			if (!lectureOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Lecture not found."), HttpStatus.NOT_FOUND);			
+			Iterator<ParentEntity> value = student.getParents().iterator();
 			
-			// get student and lecture
-			StudentEntity student = studentOpt.get();
-			LectureEntity lecture = lectureOpt.get();
-			
-			// only admin and teacher teaching the subject may input grades
-			boolean isAdmin = userServiceImpl.isAuthorizedAs(EUserRole.ADMIN);
-			boolean isTeacher = userServiceImpl.getLoggedInUsername().isPresent() && 
-								userServiceImpl.getLoggedInUsername().get().equals(lecture.getTeacher().getUsername());  
-			
-			if (!isAdmin && !isTeacher)
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-			
-			// if no grade card is created yet create one, otherwise get it
-			GradeCardEntity gradeCard = gradeCardRepository.findByLectureAndStudent(lecture, student).orElseGet(() -> {
+			while (value.hasNext()) {
 				
-				GradeCardEntity newGradeCard = new GradeCardEntity();
-				newGradeCard.setLecture(lecture);
-				newGradeCard.setStudent(student);
-				gradeCardRepository.save(newGradeCard);
+				ParentEntity parent = value.next();
 				
-				student.getGradeCards().add(newGradeCard);
-				studentRepository.save(student);
-				
-				lecture.getGradeCards().add(newGradeCard);
-				lectureRepository.save(lecture);
-				
-				return newGradeCard;
-			});
-
-			// create new grade
-			GradeEntity newGrade = new GradeEntity();
-			newGrade.setDate(LocalDate.now());
-			newGrade.setGrade(grade);
-			newGrade.setGradeCard(gradeCard);
-			gradeRepository.save(newGrade);
-			
-			gradeCard.getGrades().add(newGrade);
-			gradeCardRepository.save(gradeCard);
-			
-			logger.info("Lecture #" + lecture.getId() + " : student " + student.getUsername() + " graded " + grade);
-			
-			// !!! OVDE IDE POZIVANJE METODA KOJI SALJE EMAIL RODITELJU
-			
-			EmailObject emailObject = new EmailObject();
-			emailObject.setSubject(String.format("%s %s - new grade in subject '%s'", 
-					student.getLastName(), student.getFirstName(), 
-					newGrade.getGradeCard().getLecture().getSubject().getName()));
-			
-			emailObject.setText(String.format("Your child was graded %d today.", newGrade.getGrade()));
-			
-			Optional<ParentEntity> parentOpt = student.getParents().stream().findFirst();
-			
-			if (parentOpt.isPresent()) {
-				
-				emailObject.setTo(parentOpt.get().getEmail());
+				emailObject.setTo(parent.getEmail());
 				emailService.sendSimpleMessage(emailObject);
 				
-				logger.info("Lecture #" + lecture.getId() + " : parent notified.");
-			} else {
-				
-				logger.info("Lecture #" + lecture.getId() + " : parent not found.");
-			}
+				logger.info("Lecture #" + selectedLecture.getId() + " : parent notified.");
+	        }
 			
-			return new ResponseEntity<>(lecture, HttpStatus.OK);
+		} else {
 			
-		} catch (Exception e) {
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-							"Internal server error. Error: " + e.getMessage()), 
-					HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.info("Lecture #" + selectedLecture.getId() + " : parent not found.");
 		}
+
+		return new ModelAndView("/admin/lectures/list");
+		
+//		try {
+//			
+//			// if grade is invalid return
+//			if (!(0 < grade && grade <= 5))
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.BAD_REQUEST.value(), "Invalid grade."), HttpStatus.BAD_REQUEST);
+//		
+//			Optional<StudentEntity> studentOpt = studentRepository.findById(studentId);
+//			Optional<LectureEntity> lectureOpt = lectureRepository.findById(lectureId);
+//		
+//			// if student is not found return
+//			if (!studentOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Student not found."), HttpStatus.NOT_FOUND);
+//			
+//			// if lecture is not found return
+//			if (!lectureOpt.isPresent())
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.NOT_FOUND.value(), "Lecture not found."), HttpStatus.NOT_FOUND);			
+//			
+//			// get student and lecture
+//			StudentEntity student = studentOpt.get();
+//			LectureEntity lecture = lectureOpt.get();
+//			
+//			// only admin and teacher teaching the subject may input grades
+//			boolean isAdmin = userServiceImpl.isAuthorizedAs(EUserRole.ADMIN);
+//			boolean isTeacher = userServiceImpl.getLoggedInUsername().isPresent() && 
+//								userServiceImpl.getLoggedInUsername().get().equals(lecture.getTeacher().getUsername());  
+//			
+//			if (!isAdmin && !isTeacher)
+//				return new ResponseEntity<RESTError>(
+//						new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+//			
+//			// if no grade card is created yet create one, otherwise get it
+//			GradeCardEntity gradeCard = gradeCardRepository.findByLectureAndStudent(lecture, student).orElseGet(() -> {
+//				
+//				GradeCardEntity newGradeCard = new GradeCardEntity();
+//				newGradeCard.setLecture(lecture);
+//				newGradeCard.setStudent(student);
+//				gradeCardRepository.save(newGradeCard);
+//				
+//				student.getGradeCards().add(newGradeCard);
+//				studentRepository.save(student);
+//				
+//				lecture.getGradeCards().add(newGradeCard);
+//				lectureRepository.save(lecture);
+//				
+//				return newGradeCard;
+//			});
+//
+//			// create new grade
+//			GradeEntity newGrade = new GradeEntity();
+//			newGrade.setDate(LocalDate.now());
+//			newGrade.setGrade(grade);
+//			newGrade.setGradeCard(gradeCard);
+//			gradeRepository.save(newGrade);
+//			
+//			gradeCard.getGrades().add(newGrade);
+//			gradeCardRepository.save(gradeCard);
+//			
+//			logger.info("Lecture #" + lecture.getId() + " : student " + student.getUsername() + " graded " + grade);
+//			
+//			// !!! OVDE IDE POZIVANJE METODA KOJI SALJE EMAIL RODITELJU
+//			
+//			EmailObject emailObject = new EmailObject();
+//			emailObject.setSubject(String.format("%s %s - new grade in subject '%s'", 
+//					student.getLastName(), student.getFirstName(), 
+//					newGrade.getGradeCard().getLecture().getSubject().getName()));
+//			
+//			emailObject.setText(String.format("Your child was graded %d today.", newGrade.getGrade()));
+//			
+//			Optional<ParentEntity> parentOpt = student.getParents().stream().findFirst();
+//			
+//			if (parentOpt.isPresent()) {
+//				
+//				emailObject.setTo(parentOpt.get().getEmail());
+//				emailService.sendSimpleMessage(emailObject);
+//				
+//				logger.info("Lecture #" + lecture.getId() + " : parent notified.");
+//			} else {
+//				
+//				logger.info("Lecture #" + lecture.getId() + " : parent not found.");
+//			}
+//			
+//			return new ResponseEntity<>(lecture, HttpStatus.OK);
+//			
+//		} catch (Exception e) {
+//			return new ResponseEntity<RESTError>(
+//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
+//							"Internal server error. Error: " + e.getMessage()), 
+//					HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 	}
 	
 	

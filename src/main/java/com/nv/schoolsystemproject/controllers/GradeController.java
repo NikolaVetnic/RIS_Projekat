@@ -1,6 +1,9 @@
 package com.nv.schoolsystemproject.controllers;
 
+import java.util.List;
 import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nv.schoolsystemproject.controllers.util.RESTError;
 import com.nv.schoolsystemproject.entities.EUserRole;
 import com.nv.schoolsystemproject.entities.GradeCardEntity;
 import com.nv.schoolsystemproject.entities.GradeEntity;
+import com.nv.schoolsystemproject.entities.SchoolClassEntity;
 import com.nv.schoolsystemproject.repositories.GradeCardRepository;
 import com.nv.schoolsystemproject.repositories.GradeRepository;
 import com.nv.schoolsystemproject.services.UserServiceImpl;

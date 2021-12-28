@@ -58,6 +58,10 @@
 					<td width="10" />
 					<td class="table_cell"><a href="/api/v1/project/lectures/update_lecture?idToUpdate=${ l.id }">Ažuriraj</a></td>
 					<td width="10" />
+					<td class="table_cell"><a href="/api/v1/project/lectures/all_students?idToUpdate=${ l.id }">Učenici</a></td>
+					<td width="10" />
+					<td class="table_cell"><a href="/api/v1/project/sessions/list?idToUpdate=${ l.id }">Sesije</a></td>
+					<td width="10" />
 				</tr>
 			</c:forEach>	
 			

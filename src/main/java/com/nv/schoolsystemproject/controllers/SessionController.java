@@ -1,9 +1,12 @@
 package com.nv.schoolsystemproject.controllers;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.nv.schoolsystemproject.controllers.dto.SessionRegisterDTO;
 import com.nv.schoolsystemproject.controllers.util.RESTError;
@@ -28,6 +32,7 @@ import com.nv.schoolsystemproject.entities.LectureEntity;
 import com.nv.schoolsystemproject.entities.ParentEntity;
 import com.nv.schoolsystemproject.entities.SessionEntity;
 import com.nv.schoolsystemproject.entities.StudentEntity;
+import com.nv.schoolsystemproject.entities.UserEntity;
 import com.nv.schoolsystemproject.models.EmailObject;
 import com.nv.schoolsystemproject.repositories.AbsenceRepository;
 import com.nv.schoolsystemproject.repositories.GradeCardRepository;
@@ -54,6 +59,43 @@ public class SessionController {
 	@Autowired private UserServiceImpl userServiceImpl;
 
 	@Autowired private EmailService emailService;
+	
+	
+	// =-=-=-= GET : ROUTES
+	
+	
+	@RequestMapping(path = "/list", method = RequestMethod.GET) 
+	public ModelAndView getSessions(HttpServletRequest request) {
+		
+		LectureEntity selectedLecture = lectureRepository
+				.findById(Integer.parseInt((String) request.getParameter("idToUpdate"))).get();
+		request.getSession().setAttribute("selectedLecture", selectedLecture);
+		
+		List<SessionEntity> sessions = selectedLecture.getSessions();
+		
+		sessions = sessions.stream().sorted(new Comparator<SessionEntity>() {
+			@Override public int compare(SessionEntity o1, SessionEntity o2) {
+				return o1.getDate().compareTo(o2.getDate());
+			}
+		}).collect(Collectors.toList());
+		
+		request.setAttribute("sessions", sessions);
+		
+		System.out.println(sessions);
+		
+		ModelAndView mav = new ModelAndView("/admin/sessions/list");
+		
+		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/register_session", method = RequestMethod.GET) 
+	public ModelAndView getRegistrationHome(HttpServletRequest request) {
+		
+		ModelAndView mav = new ModelAndView("/admin/sessions/register");
+		
+		return mav;
+	}
 	
 	
 	// =-=-=-= POST =-=-=-=
@@ -112,6 +154,45 @@ public class SessionController {
 							"Internal server error. Error: " + e.getMessage()), 
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	
+	// =-=-=-= DELETE =-=-=-=
+	
+	
+	@RequestMapping(method = RequestMethod.GET, value = "/delete")
+	public ModelAndView delete(
+//			@PathVariable Integer id
+			HttpServletRequest request
+			) {
+		
+		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
+		SessionEntity session = sessionRepository.findById(idToDelete).get();
+		
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				String.format(" : deleted session %s from lecture %s (teacher %s %s).", 
+						session.getTopic(), session.getLecture().getSubject(),
+						session.getLecture().getTeacher().getLastName(), session.getLecture().getTeacher().getFirstName()));		
+		request.setAttribute("deleteSuccessMsg", String.format("Sesija %s je uspešno obrisan!", session.getTopic()));
+				
+		sessionRepository.delete(session);
+		
+		LectureEntity selectedLecture = (LectureEntity) request.getSession().getAttribute("selectedLecture");
+		List<SessionEntity> sessions = lectureRepository.findById(selectedLecture.getId()).get().getSessions();
+		
+		sessions = sessions.stream().sorted(new Comparator<SessionEntity>() {
+			@Override public int compare(SessionEntity o1, SessionEntity o2) {
+				return o1.getDate().compareTo(o2.getDate());
+			}
+		}).collect(Collectors.toList());
+		
+		request.setAttribute("sessions", sessions);
+		
+		System.out.println(sessions);
+		
+		ModelAndView mav = new ModelAndView("/admin/sessions/list");
+		
+		return mav;
 	}
 	
 
