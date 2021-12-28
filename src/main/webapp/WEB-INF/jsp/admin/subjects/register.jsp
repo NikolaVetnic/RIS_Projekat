@@ -34,15 +34,15 @@
 			<table>
 				<tr>
 					<td>Naziv</td>
-					<td><input type="text" name="name" /></td>
+					<td><input type="text" name="name" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Broj časova</td>
-					<td><input type="text" name="totalHours" /></td>
+					<td><input type="text" name="totalHours" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Godina akreditacije</td>
-					<td><input type="text" name="yearAccredited" /></td>
+					<td><input type="text" name="yearAccredited" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>

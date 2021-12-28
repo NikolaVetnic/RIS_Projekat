@@ -34,15 +34,15 @@
 			<table>
 				<tr>
 					<td>Naziv</td>
-					<td><input type="text" name="name" value="${ subjectToUpdate.name }" /></td>
+					<td><input type="text" name="name" value="${ subjectToUpdate.name }" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Broj časova</td>
-					<td><input type="text" name="totalHours" value="${ subjectToUpdate.totalHours }" /></td>
+					<td><input type="text" name="totalHours" value="${ subjectToUpdate.totalHours }" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Godina akreditacije</td>
-					<td><input type="text" name="yearAccredited" value="${ subjectToUpdate.yearAccredited }" /></td>
+					<td><input type="text" name="yearAccredited" value="${ subjectToUpdate.yearAccredited }" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>

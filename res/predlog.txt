@@ -7,6 +7,7 @@ Osnovne funkcionalnosti obuhvatale bi:
 upis ocena (samo nastavnici),
 pregled i pretraga ocena (nastavnici za sve svoje ucenike, roditelji za svoju decu, ucenici za sebe),
 logovanje korisnika sa odgovarajucim ulogama.
+
 Dakle, kada se korisnik uloguje u sistem sa svojim user/pass informacijama (koristice se tokeni) korisnik moze 
 da koristi odredjene funkcionalnosti na osnovu svoje uloge: ako je ucenik moze da vidi svoje ocene, ako je 
 roditelj gleda ocene svoje dece (takodje roditelj dobija mail kada mu neko od dece dobije ocenu), ako je 

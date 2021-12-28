@@ -32,15 +32,15 @@
 			<table>
 				<tr>
 					<td>Korisničko ime</td>
-					<td><input type="text" name="username" /></td>
+					<td><input type="text" name="username" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Lozinka</td>
-					<td><input type="text" name="password" /></td>
+					<td><input type="text" name="password" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Lozinka (ponovo)</td>
-					<td><input type="text" name="confirmPassword" /></td>
+					<td><input type="text" name="confirmPassword" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>

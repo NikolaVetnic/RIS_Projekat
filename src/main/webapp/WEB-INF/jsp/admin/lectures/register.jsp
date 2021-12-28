@@ -66,7 +66,7 @@
 				</tr>
 				<tr>
 					<td>Nastavna godina</td>
-					<td><input type="text" name="year"  style="width: 390px" /></td>
+					<td><input type="text" name="year" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>

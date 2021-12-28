@@ -32,19 +32,19 @@
 			<table>
 				<tr>
 					<td>Ime</td>
-					<td><input type="text" name="firstName" value="${ teacherToUpdate.firstName }"/></td>
+					<td><input type="text" name="firstName" value="${ teacherToUpdate.firstName }" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Prezime</td>
-					<td><input type="text" name="lastName" value="${ teacherToUpdate.lastName }"/></td>
+					<td><input type="text" name="lastName" value="${ teacherToUpdate.lastName }" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Lozinka</td>
-					<td><input type="text" name="password"/></td>
+					<td><input type="text" name="password" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>Lozinka (ponovo)</td>
-					<td><input type="text" name="confirmPassword"/></td>
+					<td><input type="text" name="confirmPassword" style="width: 390px" /></td>
 				</tr>
 				<tr>
 					<td>

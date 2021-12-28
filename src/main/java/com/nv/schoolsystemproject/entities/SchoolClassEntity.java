@@ -61,4 +61,17 @@ public class SchoolClassEntity {
 	@JsonBackReference
 	@OneToMany(mappedBy = "schoolClass", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
 	protected List<StudentEntity> students = new ArrayList<>();
+	
+	public String getFormattedString() {
+		
+		String c = 	classNo == 1 ? "I" 		:
+					classNo == 2 ? "II" 	:
+					classNo == 3 ? "III" 	:
+					classNo == 4 ? "IV" 	:
+					classNo == 5 ? "V" 		:
+					classNo == 6 ? "VI" 	:
+					classNo == 7 ? "VII" 	: "VIII";
+		
+		return c + "-" + sectionNo + " (" + generation + ")";
+	}
 }

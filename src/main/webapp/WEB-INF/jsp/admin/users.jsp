@@ -96,7 +96,11 @@
 			
 		</table>
 		<br />
-		<span class="success">${ deleteSuccessMsg }</span>
+		<c:if test="${ !empty deleteSuccessMsg }">
+			<span class="success">${ deleteSuccessMsg }</span>
+			<br />
+		</c:if>
+		<a href="/api/v1/project/registration/home">Nazad na korisnike</a> 
 		<br />
 		<br />
 		<br />

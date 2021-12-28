@@ -18,11 +18,11 @@
 		<table>
 			<tr>
 				<td>Korisničko ime</td>
-				<td><input type="text" name="username" /></td>
+				<td><input type="text" name="username" style="width: 390px" /></td>
 			</tr>
 			<tr>
 				<td>Lozinka</td>
-				<td><input type="text" name="pwd" /></td>
+				<td><input type="text" name="pwd" style="width: 390px" /></td>
 			</tr>
 			<tr>
 				<td>
