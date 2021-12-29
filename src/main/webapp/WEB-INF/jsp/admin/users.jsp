@@ -15,7 +15,6 @@
 		<a href="/api/v1/project/admin/home">Glavna</a>
 		<a href="/api/v1/project/registration/home" class="sidenav-sel">Korisnici</a> 
 		<a href="/api/v1/project/subjects/home">Predmeti</a>
-		<a href="#">Opcija #3</a>
 		<a href="/api/v1/project/admin/logs">Pregled logova</a>
 		<br>
 		<a href="/">Izloguj se</a>
@@ -91,6 +90,13 @@
 							<a href="/api/v1/project/update/update_teacher?idToUpdate=${ u.id }">Ažuriraj</a>
 						</c:if>
 					</td>
+					<td width="10" />
+					<td>
+						<c:if test="${ u.role == 'STUDENT' }">
+							<a href="/api/v1/project/grade/grade_cards?idToUpdate=${ u.id }">Ocene</a>
+						</c:if>
+					</td>
+					<td width="10" />
 				</tr>
 			</c:forEach>	
 			

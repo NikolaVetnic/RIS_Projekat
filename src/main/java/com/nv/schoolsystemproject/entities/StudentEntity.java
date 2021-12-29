@@ -77,4 +77,17 @@ public class StudentEntity extends UserEntity {
 		
 		return false;
 	}
+	
+	public boolean hasAbsenceForSession(SessionEntity session) {
+		
+		GradeCardEntity gradeCard = gradeCards.stream()
+				.filter(gc -> gc.getLecture().getId() == session.getLecture().getId())
+				.findFirst().get();
+		
+		for (AbsenceEntity absence : gradeCard.getAbsences())
+			if (absence.getDate().equals(session.getDate()))
+				return true;
+			
+		return false;
+	}
 }

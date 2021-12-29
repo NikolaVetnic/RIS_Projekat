@@ -15,7 +15,6 @@
 		<a href="/api/v1/project/admin/home">Glavna</a>
 		<a href="/api/v1/project/registration/home">Korisnici</a> 
 		<a href="/api/v1/project/subjects/home" class="sidenav-sel">Predmeti</a>
-		<a href="#">Opcija #3</a>
 		<a href="/api/v1/project/admin/logs">Pregled logova</a>
 		<br>
 		<a href="/">Izloguj se</a>
@@ -29,7 +28,7 @@
 		
 		<br />
 		
-		<form action="/api/v1/project/lectures/register" method="post"> <!--  RUTIRANJE NIJE URADJENO -->
+		<form action="/api/v1/project/sessions/register" method="post">
 		
 			<table>
 				<tr>
@@ -50,8 +49,8 @@
 			
 		</form>
 		
-		<span class="success">${ sessionRegisterSuccessMsg }</span> <!--  NIJE URADJENO -->
-		<span class="error">${ sessionRegisterMsg }</span> <!--  NIJE URADJENO -->
+		<span class="success">${ sessionRegisterSuccessMsg }</span>
+		<span class="error">${ sessionRegisterMsg }</span>
 		
 	</div>
 	

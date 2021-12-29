@@ -15,7 +15,6 @@
 		<a href="/api/v1/project/admin/home">Glavna</a>
 		<a href="/api/v1/project/registration/home">Korisnici</a> 
 		<a href="/api/v1/project/subjects/home" class="sidenav-sel">Predmeti</a>
-		<a href="#">Opcija #3</a>
 		<a href="/api/v1/project/admin/logs">Pregled logova</a>
 		<br>
 		<a href="/">Izloguj se</a>
@@ -50,6 +49,8 @@
 						<td class="table_cell">${ s.date }</td>
 						<td width="10" />
 						<td class="table_cell"><a href="/api/v1/project/sessions/delete?idToDelete=${ s.id }">Obriši</a></td>
+						<td width="10" />
+						<td class="table_cell"><a href="/api/v1/project/grade/get_students_for_absences?sessionId=${ s.id }">Unesi izostanke</a></td>
 						<td width="10" />
 					</tr>
 				</c:forEach>	

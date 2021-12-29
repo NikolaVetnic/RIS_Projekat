@@ -55,7 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //			.addFilterAfter(new JWTAuthorizationFilter(secretKey), UsernamePasswordAuthenticationFilter.class)
 			.authorizeRequests()
 			.antMatchers(HttpMethod.GET, "/").permitAll()
-			.antMatchers(HttpMethod.POST, "/**").permitAll() // ovo promeniti samo za login POST
+			.antMatchers(HttpMethod.POST, "/").permitAll() // ovo promeniti samo za login POST
 			.antMatchers(HttpMethod.GET, "/api/v1/project/admin/**").hasAuthority("ADMIN")
 			.antMatchers(HttpMethod.GET, "/api/v1/project/parent/**").hasAuthority("PARENT")
 			.antMatchers(HttpMethod.GET, "/api/v1/project/student/**").hasAuthority("STUDENT")

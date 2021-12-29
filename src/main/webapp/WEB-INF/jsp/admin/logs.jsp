@@ -15,7 +15,6 @@
 		<a href="/api/v1/project/admin/home">Glavna</a>
 		<a href="/api/v1/project/registration/home">Korisnici</a> 
 		<a href="/api/v1/project/subjects/home">Predmeti</a>
-		<a href="#">Opcija #3</a>
 		<a href="/api/v1/project/admin/logs" class="sidenav-sel">Pregled logova</a>
 		<br>
 		<a href="/">Izloguj se</a>

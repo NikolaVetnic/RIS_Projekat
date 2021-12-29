@@ -101,6 +101,26 @@ public class SessionController {
 	// =-=-=-= POST =-=-=-=
 	
 	
+	@RequestMapping(path = "/register", method = RequestMethod.POST) 
+	public ModelAndView registerSession(HttpServletRequest request) {
+		
+		LectureEntity lecture = (LectureEntity) request.getSession().getAttribute("selectedLecture");
+		SessionEntity session = new SessionEntity();
+		
+		session.setTopic(request.getParameter("topic"));
+		session.setLecture(lecture);
+		session.setDate(LocalDate.parse(request.getParameter("date")));
+		
+		sessionRepository.save(session);
+		
+		request.setAttribute("sessionRegisterSuccessMsg", "Sesija registrovana!");
+		
+		ModelAndView mav = new ModelAndView("/admin/sessions/register");
+		
+		return mav;
+	}
+	
+	
 	@RequestMapping(method = RequestMethod.POST, value = "/register/{lectureId}")
 	public ResponseEntity<?> addSessionToLecture(
 			@PathVariable Integer lectureId, @Valid @RequestBody SessionRegisterDTO sessionDTO, BindingResult result) {

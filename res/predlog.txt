@@ -1,14 +1,20 @@
 CHECKLIST:
  1) UPIS OCENA (admin)												URADJENO
- 2) UPIS OCENA (nastavnik)
- 3) PREGLED OCENA PO KRITERIJUMIMA (nastavnik za svoje ucenike)
- 4) UPIS OCENA (nastavnik za svoje ucenike)
- 5) MENJANJE OCENA (nastavnik za svoje ucenike)
- 6) PREGLED OCENA (roditelj za svoje dete)
- 7) PREGLED OCENA (ucenik za sebe)
- 8) LOGIN (admin)													URADJENO
- 9) LOGIN (teacher)													URADJENO
-10) LOGIN (student)													URADJENO
-11) LOGIN (parent)													URADJENO
-12) MAIL PO UPISU OCENE (roditelj prima mail)						URADJENO
-13) ...pogledati ideas.txt
+ 2) UPIS OCENA (nastavnik za svoje ucenike)							o--o
+ 3) PREGLED OCENA (admin)											URADJENO
+ 4) PREGLED OCENA PO KRITERIJUMIMA (nastavnik za svoje ucenike)		o--o
+ 5) MENJANJE OCENA (admin)											URADJENO						
+ 6) MENJANJE OCENA (nastavnik za svoje ucenike)						o--o
+ 7) PREGLED OCENA (roditelj za svoje dete)							o--o
+ 8) PREGLED OCENA (ucenik za sebe)									o--o
+ 9) LOGIN (admin)													URADJENO
+10) LOGIN (teacher)													URADJENO
+11) LOGIN (student)													URADJENO
+12) LOGIN (parent)													URADJENO
+13) MAIL PO UPISU OCENE (roditelj prima mail)						URADJENO
+14) UPIS SESIJE (admin)												URADJENO
+15) UPIS SESIJE (nastavnik za svoje sesije)							o--o
+16) UPIS IZOSTANAKA (admin)											URADJENO
+17) UPIS IZOSTANAKA (nastavnik za svoje ucenike)					o--o
+18) PREGLED IZOSTANAKA												URADJENO
+19) UNOS OPRAVDANJA ZA IZOSTANAK									URADJENO
