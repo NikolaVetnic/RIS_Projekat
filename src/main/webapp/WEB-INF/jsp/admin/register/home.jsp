@@ -44,6 +44,10 @@
 		<ul>
 			<li><a href="/api/v1/project/classes/register_school_class">Registracija odelenja</a></li>
 		</ul>
+		<h3>IZVEŠTAJI</h3>
+		<ul>
+			<li><a href="/api/v1/project/admin/all_students_report">Generisanje spiska učenika po odelenjima</a></li>
+		</ul>
 	</div>
 	
 	<br /><br /><br />

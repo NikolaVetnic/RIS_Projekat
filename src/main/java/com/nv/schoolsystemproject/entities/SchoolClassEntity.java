@@ -30,7 +30,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Entity
 @Table(name = "classes")
-public class SchoolClassEntity {
+public class SchoolClassEntity implements Comparable<SchoolClassEntity> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -73,5 +73,14 @@ public class SchoolClassEntity {
 					classNo == 7 ? "VII" 	: "VIII";
 		
 		return c + "-" + sectionNo + " (" + generation + ")";
+	}
+	
+	@Override public String toString() {
+		return getFormattedString();
+	}
+
+	@Override
+	public int compareTo(SchoolClassEntity other) {
+		return getFormattedString().compareTo(other.getFormattedString());
 	}
 }

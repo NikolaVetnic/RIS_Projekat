@@ -3,15 +3,20 @@ package com.nv.schoolsystemproject.controllers;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -51,6 +56,13 @@ import com.nv.schoolsystemproject.repositories.TeacherRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
 import com.nv.schoolsystemproject.services.UserServiceImpl;
 import com.nv.schoolsystemproject.utils.UserCustomValidator;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @RestController
 @RequestMapping(path = "/api/v1/project/admin")
@@ -150,6 +162,24 @@ public class AdminController {
 		ModelAndView mav = new ModelAndView(path);
 		
 		return mav;
+	}
+	
+	
+	@RequestMapping(path = "/all_students_report", method = RequestMethod.GET)
+	public void getAllStudentsReport(HttpServletResponse response) throws Exception{
+		
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(studentRepository.findAllByOrderBySchoolClass());
+		InputStream inputStream = this.getClass().getResourceAsStream("/jasperreports/SviUceniciReport.jrxml");
+		JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("imeSkole", "Moja škola");
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+		inputStream.close();
+		
+		response.setContentType("application/x-download");
+		response.addHeader("Content-disposition", "attachment; filename=SviUcenici.pdf");
+		OutputStream out = response.getOutputStream();
+		JasperExportManager.exportReportToPdfStream(jasperPrint,out);
 	}
 	
 	
