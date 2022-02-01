@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Pregled predavanja</title>
-<style type="text/css"><%@ include file="/resources/css/styles.css" %> </style>
+<style type="text/css"><%@ include file="/resources/css/admin.css" %> </style>
 </head>
 <body>
 
@@ -32,8 +32,10 @@
 			<tr>
 				<th class="table_header">Predmet</th>
 				<td width="10" />
-				<th class="table_header">Nastavnik</th>
-				<td width="10" />
+				<c:if test="${ role != 'teacher' }">
+					<th class="table_header">Nastavnik</th>
+					<td width="10" />
+				</c:if>
 				<th class="table_header">Godina održavanja</th>
 				<td width="10" />
 				<th class="table_header">Polugodište</th>
@@ -44,8 +46,10 @@
 				<tr>
 					<td class="table_cell">${ l.subject.name }</td>
 					<td width="10" />
-					<td class="table_cell">${ l.teacher.firstName } ${ l.teacher.lastName }</td>
-					<td width="10" />
+					<c:if test="${ role != 'teacher' }">
+						<td class="table_cell">${ l.teacher.firstName } ${ l.teacher.lastName }</td>
+						<td width="10" />
+					</c:if>
 					<td class="table_cell">${ l.year }</td>
 					<td width="10" />
 					<td class="table_cell">

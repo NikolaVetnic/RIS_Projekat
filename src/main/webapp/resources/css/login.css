@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* Global HTML settings */
+html * {
+	background-color: black;
+	font-size: 12pt;
+	font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+		DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+	color: white;
+}
+
+.p-class {
+    background: transparent !important;
+}
+
+/* Login error */
+.error {
+	font-size: 10pt;
+	color: #a62519;
+}
+
+.success {
+	font-size: 10pt;
+	color: #f29544;
+}

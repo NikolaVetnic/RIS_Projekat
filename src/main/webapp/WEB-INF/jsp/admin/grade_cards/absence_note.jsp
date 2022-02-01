@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Unos opravdanja</title>
-<style type="text/css"><%@ include file="/resources/css/styles.css" %> </style>
+<style type="text/css"><%@ include file="/resources/css/admin.css" %> </style>
 </head>
 <body>
 

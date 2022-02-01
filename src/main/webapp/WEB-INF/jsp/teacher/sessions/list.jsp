@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Pregled sesija</title>
-<style type="text/css"><%@ include file="/resources/css/styles.css" %> </style>
+<style type="text/css"><%@ include file="/resources/css/teacher.css" %> </style>
 </head>
 <body>
 
@@ -67,6 +67,7 @@
 		
 		<a href="/api/v1/project/lectures/list">Nazad na pregled svih predavanja</a>
 		
+		<br />
 		<br />
 		<br />
 		

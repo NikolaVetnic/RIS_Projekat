@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Pregled ocena</title>
-<style type="text/css"><%@ include file="/resources/css/styles.css" %> </style>
+<style type="text/css"><%@ include file="/resources/css/teacher.css" %> </style>
 </head>
 <body>
 
@@ -27,7 +27,7 @@
 		
 		<c:forEach items="${ gradeCards }" var="gc">
 		
-			<h3>${ gc.lecture.subject.name } (nastavnik ${ gc.lecture.teacher.lastName } ${ gc.lecture.teacher.firstName })</h3>
+			<h3>${ gc.lecture.subject.name }</h3>
 			<blockquote>
 				Ocene : 
 					<blockquote>

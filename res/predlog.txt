@@ -6,7 +6,7 @@ CHECKLIST:
  5) MENJANJE OCENA (admin)											URADJENO	ADM						
  6) MENJANJE OCENA (nastavnik za svoje ucenike)						URADJENO		NST
  7) PREGLED OCENA (roditelj za svoje dete)							URADJENO			ROD
- 8) PREGLED OCENA (ucenik za sebe)									o--o					UCN
+ 8) PREGLED OCENA (ucenik za sebe)									URADJENO				UCN
  9) LOGIN (admin)													URADJENO	ADM
 10) LOGIN (teacher)													URADJENO		NST
 11) LOGIN (student)													URADJENO				UCN

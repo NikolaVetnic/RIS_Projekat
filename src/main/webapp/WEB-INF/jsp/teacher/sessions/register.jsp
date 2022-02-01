@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Registrovanje sesije</title>
-<style type="text/css"><%@ include file="/resources/css/styles.css" %> </style>
+<style type="text/css"><%@ include file="/resources/css/teacher.css" %> </style>
 </head>
 <body>
 
