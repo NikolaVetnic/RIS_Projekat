@@ -10,33 +10,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nv.schoolsystemproject.controllers.dto.AdminRegisterDTO;
-import com.nv.schoolsystemproject.controllers.util.RESTError;
 import com.nv.schoolsystemproject.entities.AdminEntity;
-import com.nv.schoolsystemproject.entities.EUserRole;
 import com.nv.schoolsystemproject.entities.GradeCardEntity;
 import com.nv.schoolsystemproject.entities.GradeEntity;
 import com.nv.schoolsystemproject.entities.LectureEntity;
@@ -54,7 +41,6 @@ import com.nv.schoolsystemproject.repositories.StudentRepository;
 import com.nv.schoolsystemproject.repositories.SubjectRepository;
 import com.nv.schoolsystemproject.repositories.TeacherRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
-import com.nv.schoolsystemproject.services.UserServiceImpl;
 import com.nv.schoolsystemproject.utils.UserCustomValidator;
 
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -81,8 +67,6 @@ public class AdminController {
 	@Autowired private SubjectRepository subjectRepository;
 	@Autowired private TeacherRepository teacherRepository;
 	@Autowired private UserRepository userRepository;
-
-	@Autowired private UserServiceImpl userServiceImpl;
 	
 	@Autowired UserCustomValidator userValidator;
 	
@@ -91,54 +75,18 @@ public class AdminController {
 	
 	@RequestMapping(path = "/home", method = RequestMethod.GET) 
 	public ModelAndView getHome(HttpServletRequest request) {
-		
-		ModelAndView mav = new ModelAndView("/admin/home");
-		
-		return mav;
+		return new ModelAndView("/admin/home");
 	}
 	
 	
 	@RequestMapping(path = "/users", method = RequestMethod.GET) 
 	public ModelAndView getAllUsers(HttpServletRequest request) {
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-		
-		String path = "/admin/users";
-		
-		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			path = "/admin/error";
-		
-		List<UserEntity> users = StreamSupport
-				  .stream(userRepository.findAll().spliterator(), false)
-				  .collect(Collectors.toList());
-		
-		request.setAttribute("users", users);
-		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all users.");
-
-		// povratna vrednost verzije kada je radjen samo back
-		// return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
-		
-		ModelAndView mav = new ModelAndView(path);
-		
-		return mav;
+		return getModelAndViewToUsers(request);
 	}
 	
 	
 	@RequestMapping(path = "/logs", method = RequestMethod.GET)
 	public ModelAndView getLogs(HttpServletRequest request) throws IOException {
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-		
-		String path = "/admin/logs";
-		
-		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			path = "/admin/error";
 		
 		BufferedReader in = new BufferedReader(
 				new FileReader("logs//spring-boot-logging.log"));
@@ -153,15 +101,9 @@ public class AdminController {
 		
 		request.setAttribute("logs", lines);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed logs.");
 		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed logs.");
 		
-		// povratna vrednost verzije kada je radjen samo back
-		// return new ResponseEntity<>(sb.toString(), HttpStatus.OK);
-		
-		ModelAndView mav = new ModelAndView(path);
-		
-		return mav;
+		return new ModelAndView("/admin/logs");
 	}
 	
 	
@@ -171,67 +113,26 @@ public class AdminController {
 		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(studentRepository.findAllByOrderBySchoolClass());
 		InputStream inputStream = this.getClass().getResourceAsStream("/jasperreports/SviUceniciReport.jrxml");
 		JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+		
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("imeSkole", "Moja škola");
+		
 		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
 		inputStream.close();
 		
 		response.setContentType("application/x-download");
 		response.addHeader("Content-disposition", "attachment; filename=SviUcenici.pdf");
+		
 		OutputStream out = response.getOutputStream();
 		JasperExportManager.exportReportToPdfStream(jasperPrint,out);
-	}
-	
-	
-	// =-=-=-= PUT =-=-=-=
-	
-	
-	@RequestMapping(method = RequestMethod.PUT, value = "/update/{id}")
-	public ResponseEntity<?> update(@PathVariable Integer id, @Valid @RequestBody AdminRegisterDTO adminDTO, BindingResult result) {
-
-		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-		
-		if (result.hasErrors())
-			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-		else
-			userValidator.validate(adminDTO, result);
-		
-		Optional<AdminEntity> adminOpt = adminRepository.findById(id);
-		
-		if (!adminOpt.isPresent())
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.NOT_FOUND.value(), "Subject not found."), HttpStatus.NOT_FOUND);
-		
-		AdminEntity admin = adminOpt.get();
-		
-		admin.setUsername(adminDTO.getUsername());
-		admin.setPassword(adminDTO.getPassword());
-		
-		adminRepository.save(admin);
-		
-		logger.info(userServiceImpl.getLoggedInUsername() + " : updated admin " + admin.getUsername());
-//		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : updated admin " + admin.getUsername());
-		
-		return new ResponseEntity<>(admin, HttpStatus.OK);
-	}
-	
-
-	private String createErrorMessage(BindingResult result) {
-		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n"));
 	}
 	
 	
 	// =-=-=-= DELETE =-=-=-=
 	
 	
-//	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
 	@RequestMapping(method = RequestMethod.GET, value = "/delete")
-	public ModelAndView delete(
-//			@PathVariable Integer id
-			HttpServletRequest request
-			) {
+	public ModelAndView delete(HttpServletRequest request) {
 		
 		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
 		UserEntity userEntity = userRepository.findById(idToDelete).get();
@@ -244,52 +145,6 @@ public class AdminController {
 		}
 		
 		return getModelAndViewToUsers(request);
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		try {
-//		
-//			AdminEntity admin = adminRepository.findById(id).orElse(null);
-//			
-//			adminRepository.delete(admin);
-//			
-//			if (admin == null)
-//				return new ResponseEntity<RESTError>(
-//						new RESTError(HttpStatus.NOT_FOUND.value(), "Admin not found."), HttpStatus.NOT_FOUND);
-//			
-//			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted admin " + admin.getUsername());
-//			
-//			return new ResponseEntity<AdminEntity>(admin, HttpStatus.OK);
-//			
-//		} catch (Exception e) {
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error. Error: " + e.getMessage()), 
-//					HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
-	}
-	
-	
-	private ModelAndView getModelAndViewToUsers(HttpServletRequest request) {
-		
-		String path = "/admin/users";
-		
-		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			path = "/admin/error";
-		
-		List<UserEntity> users = StreamSupport
-				  .stream(userRepository.findAll().spliterator(), false)
-				  .collect(Collectors.toList());
-		
-		request.setAttribute("users", users);
-		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all users.");
-		
-		ModelAndView mav = new ModelAndView(path);
-		
-		return mav;
 	}
 	
 	
@@ -302,8 +157,8 @@ public class AdminController {
 		AdminEntity admin = adminRepository.findById(idToDelete).get();
 		adminRepository.delete(admin);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted admin " + admin.getUsername());
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted admin " + admin.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				" : deleted admin " + admin.getUsername());
 		
 		request.setAttribute("deleteSuccessMsg", String.format("Admin %s je uspešno obrisan!", 
 				admin.getUsername()));
@@ -322,8 +177,8 @@ public class AdminController {
 		
 		parentRepository.delete(parent);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted parent " + parent.getUsername());
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted parent " + parent.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				" : deleted parent " + parent.getUsername());
 		
 		request.setAttribute("deleteSuccessMsg", String.format("Roditelj %s %s je uspešno obrisan!", 
 				parent.getFirstName(), parent.getLastName()));
@@ -354,8 +209,8 @@ public class AdminController {
 		
 		studentRepository.delete(student);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted student " + student.getUsername());
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted student " + student.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				" : deleted student " + student.getUsername());
 		
 		request.setAttribute("deleteSuccessMsg", String.format("Učenik %s %s je uspešno obrisan!", 
 				student.getFirstName(), student.getLastName()));
@@ -389,10 +244,23 @@ public class AdminController {
 		
 		teacherRepository.delete(teacher);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted teacher " + teacher.getUsername());
-		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted teacher " + teacher.getUsername());
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + 
+				" : deleted teacher " + teacher.getUsername());
 		
 		request.setAttribute("deleteSuccessMsg", String.format("Nastavnik %s %s je uspešno obrisan!", 
 				teacher.getFirstName(), teacher.getLastName()));
+	}
+	
+	
+	// =-=-=-= AUX
+	
+	
+	private ModelAndView getModelAndViewToUsers(HttpServletRequest request) {
+		
+		request.setAttribute("users", userRepository.findAllByOrderByRole());
+		
+		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all users.");
+		
+		return new ModelAndView("/admin/users");
 	}
 }

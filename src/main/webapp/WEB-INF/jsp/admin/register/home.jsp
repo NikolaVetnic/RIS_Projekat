@@ -50,7 +50,9 @@
 		</ul>
 	</div>
 	
-	<br /><br /><br />
+	<br />
+	<br />
+	<br />
 	
 	<div class="footer">
 	  	School System Project @ Razvoj informacionih sistema, 2021.

@@ -3,16 +3,12 @@ package com.nv.schoolsystemproject.controllers;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,9 +59,7 @@ public class SubjectController {
 	@RequestMapping(path = "/home", method = RequestMethod.GET) 
 	public ModelAndView getSubjectsHome(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/subjects/home");
-		
-		return mav;
+		return new ModelAndView("/admin/subjects/home");
 	}
 	
 	
@@ -74,9 +68,7 @@ public class SubjectController {
 		
 		request.setAttribute("subjects", (List<SubjectEntity>) subjectRepository.findAll());
 		
-		ModelAndView mav = new ModelAndView("/admin/subjects/list");
-		
-		return mav;
+		return new ModelAndView("/admin/subjects/list");
 	}
 	
 	
@@ -85,9 +77,7 @@ public class SubjectController {
 		
 		request.setAttribute("teachers", (List<TeacherEntity>) teacherRepository.findAll());
 		
-		ModelAndView mav = new ModelAndView("/admin/subjects/register");
-		
-		return mav;
+		return new ModelAndView("/admin/subjects/register");
 	}
 	
 	
@@ -99,9 +89,7 @@ public class SubjectController {
 
 		request.getSession().setAttribute("subjectToUpdate", subjectToUpdate);
 		
-		ModelAndView mav = new ModelAndView("/admin/subjects/update");
-		
-		return mav;
+		return new ModelAndView("/admin/subjects/update");
 	}
 	
 	
@@ -109,9 +97,7 @@ public class SubjectController {
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/register")
-	public ModelAndView addNewSubject(
-//			@Valid @RequestBody SubjectRegisterDTO subjectDTO, BindingResult result
-			HttpServletRequest request) {
+	public ModelAndView addNewSubject(HttpServletRequest request) {
 		
 		SubjectEntity subject = new SubjectEntity();
 		ModelAndView mav = new ModelAndView("/admin/subjects/register");
@@ -134,44 +120,14 @@ public class SubjectController {
 		request.setAttribute("subjectRegisterSuccessMsg", "Predmet je uspešno registrovan!");
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			subjectValidator.validate(subjectDTO, result);
-//		
-//		SubjectEntity subject = new SubjectEntity();
-//		
-//		subject.setName(subjectDTO.getName());
-//		subject.setTotalHours(subjectDTO.getTotalHours());
-//		subject.setYearAccredited(subjectDTO.getYearAccredited());
-//		
-//		subjectRepository.save(subject);
-//		
-//		logger.info(subject.getName() + " : created.");
-//		
-//		return new ResponseEntity<>(subject, HttpStatus.OK);
-	}
-	
-
-	private String createErrorMessage(BindingResult result) {
-		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n"));
 	}
 	
 	
 	// =-=-=-= PUT =-=-=-=
 	
 	
-//	@RequestMapping(method = RequestMethod.PUT, value = "/update/{id}")
 	@RequestMapping(method = RequestMethod.POST, value = "/update")
-	public ModelAndView update(
-//			@PathVariable Integer id, @Valid @RequestBody SubjectRegisterDTO subjectDTO, BindingResult result
-			HttpServletRequest request
-			) {
+	public ModelAndView update(HttpServletRequest request) {
 		
 		SubjectEntity subject = (SubjectEntity) request.getSession().getAttribute("subjectToUpdate");
 		
@@ -193,50 +149,18 @@ public class SubjectController {
 		
 		request.getSession().setAttribute("subjectToUpdate", subject);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : updated subject " + subject.getName());
 		request.setAttribute("subjectUpdateSuccessMsg", 
 				String.format("Predmet %s je uspešno ažuriran!", subject.getName()));
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			subjectValidator.validate(subjectDTO, result);
-//		
-//		Optional<SubjectEntity> subjectOpt = subjectRepository.findById(id);
-//		
-//		if (!subjectOpt.isPresent())
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.NOT_FOUND.value(), "Subject not found."), HttpStatus.NOT_FOUND);
-//		
-//		SubjectEntity subject = subjectOpt.get();
-//		
-//		subject.setName(subjectDTO.getName());
-//		subject.setTotalHours(subjectDTO.getTotalHours());
-//		subject.setYearAccredited(subjectDTO.getYearAccredited());
-//		
-//		subjectRepository.save(subject);
-//		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : updated subject " + subject.getName());
-//		
-//		return new ResponseEntity<>(subject, HttpStatus.OK);
 	}
 	
 	
 	// =-=-=-= DELETE =-=-=-=
 	
 	
-//	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
 	@RequestMapping(method = RequestMethod.GET, value = "/delete")
-	public ModelAndView delete(
-//			@PathVariable Integer id
-			HttpServletRequest request
-			) {
+	public ModelAndView delete(HttpServletRequest request) {
 		
 		Integer idToDelete = Integer.parseInt(request.getParameter("idToDelete"));
 		SubjectEntity subject = subjectRepository.findById(idToDelete).get();
@@ -264,61 +188,16 @@ public class SubjectController {
 
 		subjectRepository.delete(subject);
 		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : deleted subject " + subject.getName());
 		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : deleted subject " + subject.getName());
 		
 		request.setAttribute("deleteSuccessMsg", String.format("Predmet %s je uspešno obrisan!", 
 				subject.getName()));
 		
 		return getModelAndViewToSubjects(request);
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		try {
-//		
-//			Optional<SubjectEntity> subjectOpt = subjectRepository.findById(id);
-//			
-//			if (!subjectOpt.isPresent())
-//				return new ResponseEntity<RESTError>(
-//						new RESTError(HttpStatus.NOT_FOUND.value(), "Subject not found."), HttpStatus.NOT_FOUND);
-//			
-//			SubjectEntity subject = subjectOpt.get();
-//			
-//			for (LectureEntity l : subject.getLectures()) {
-//				
-//				TeacherEntity currTeacher = l.getTeacher();
-//				currTeacher.getLectures().remove(l);
-//				teacherRepository.save(currTeacher);
-//				
-//				Set<GradeCardEntity> currGC = l.getGradeCards();
-//				
-//				Iterator<GradeCardEntity> it = currGC.iterator();
-//				
-//				while(it.hasNext()){
-//					
-//					GradeCardEntity gc = it.next();
-//					
-//					gc.setLecture(null);
-//					gradeCardRepository.save(gc);
-//				}
-//				
-//				lectureRepository.delete(l);
-//			}
-//			
-//			subjectRepository.delete(subject);
-//			
-//			logger.info(userServiceImpl.getLoggedInUsername() + " : deleted subject " + subject.getName());
-//			
-//			return new ResponseEntity<SubjectEntity>(subject, HttpStatus.OK);
-//			
-//		} catch (Exception e) {
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error. Error: " + e.getMessage()), 
-//					HttpStatus.INTERNAL_SERVER_ERROR);
-//		}
 	}
+	
+	
+	// =-=-=-= AUX
 	
 	
 	private ModelAndView getModelAndViewToSubjects(HttpServletRequest request) {
@@ -331,8 +210,7 @@ public class SubjectController {
 		List<SubjectEntity> subjects = (List<SubjectEntity>) subjectRepository.findAll();
 		
 		request.setAttribute("subjects", subjects);
-		
-//		logger.info(userServiceImpl.getLoggedInUsername() + " : viewed all users.");
+
 		logger.info(((UserEntity) request.getSession().getAttribute("user")).getUsername() + " : viewed all subjects.");
 		
 		ModelAndView mav = new ModelAndView(path);

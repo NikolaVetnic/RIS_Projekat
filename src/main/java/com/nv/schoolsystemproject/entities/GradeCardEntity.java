@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Min;
@@ -62,11 +63,13 @@ public class GradeCardEntity implements Comparable<GradeCardEntity> {
 	private StudentEntity student;
 	
 	@JsonManagedReference
-	@OneToMany(mappedBy = "gradeCard", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
+	@OneToMany(mappedBy = "gradeCard", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OrderBy("grade")
 	protected Set<GradeEntity> grades = new TreeSet<>();
 	
 	@JsonManagedReference
-	@OneToMany(mappedBy = "gradeCard", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
+	@OneToMany(mappedBy = "gradeCard", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
+	@OrderBy("date")
 	protected Set<AbsenceEntity> absences = new TreeSet<>();
 
 	@Version

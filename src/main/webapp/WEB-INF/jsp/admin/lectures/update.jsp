@@ -86,6 +86,11 @@
 		<span class="success">${ lectureUpdateSuccessMsg }</span>
 		<span class="error">${ lectureUpdateMsg }</span>
 		
+		<br />
+		<a href="/api/v1/project/lectures/list">Pregled svih predavanja</a>
+		<br />
+		<br />
+		
 	</div>
 	
 	<div class="footer">

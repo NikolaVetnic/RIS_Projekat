@@ -56,6 +56,11 @@
 		<span class="success">${ subjectRegisterSuccessMsg }</span>
 		<span class="error">${ subjectRegisterMsg }</span>
 		
+		<br />
+		<a href="/api/v1/project/subjects/list">Pregled svih predmeta</a>
+		<br />
+		<br />
+		
 	</div>
 	
 	<div class="footer">

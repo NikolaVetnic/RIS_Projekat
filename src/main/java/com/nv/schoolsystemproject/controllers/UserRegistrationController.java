@@ -1,14 +1,10 @@
 package com.nv.schoolsystemproject.controllers;
 
-import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +27,6 @@ import com.nv.schoolsystemproject.repositories.ParentRepository;
 import com.nv.schoolsystemproject.repositories.StudentRepository;
 import com.nv.schoolsystemproject.repositories.TeacherRepository;
 import com.nv.schoolsystemproject.repositories.UserRepository;
-import com.nv.schoolsystemproject.services.UserServiceImpl;
 import com.nv.schoolsystemproject.utils.Encryption;
 import com.nv.schoolsystemproject.utils.UserCustomValidator;
 
@@ -49,8 +44,6 @@ public class UserRegistrationController {
 	@Autowired TeacherRepository teacherRepository;
 	@Autowired UserRepository userRepository;
 	
-	@Autowired private UserServiceImpl userServiceImpl;
-	
 	@Autowired UserCustomValidator userValidator;
 
 	
@@ -66,45 +59,35 @@ public class UserRegistrationController {
 	@RequestMapping(path = "/home", method = RequestMethod.GET) 
 	public ModelAndView getRegistrationHome(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/register/home");
-		
-		return mav;
+		return new ModelAndView("/admin/register/home");
 	}
 	
 	
 	@RequestMapping(path = "/register_admin", method = RequestMethod.GET) 
 	public ModelAndView getRegisterAdmin(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/register/admin");
-		
-		return mav;
+		return new ModelAndView("/admin/register/admin");
 	}
 	
 	
 	@RequestMapping(path = "/register_teacher", method = RequestMethod.GET) 
 	public ModelAndView getRegisterTeacher(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/register/teacher");
-		
-		return mav;
+		return new ModelAndView("/admin/register/teacher");
 	}
 	
 	
 	@RequestMapping(path = "/register_parent", method = RequestMethod.GET) 
 	public ModelAndView getRegisterParent(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/register/parent");
-		
-		return mav;
+		return new ModelAndView("/admin/register/parent");
 	}
 	
 	
 	@RequestMapping(path = "/register_student", method = RequestMethod.GET) 
 	public ModelAndView getRegisterStudent(HttpServletRequest request) {
 		
-		ModelAndView mav = new ModelAndView("/admin/register/student");
-		
-		return mav;
+		return new ModelAndView("/admin/register/student");
 	}
 	
 	
@@ -112,10 +95,7 @@ public class UserRegistrationController {
 	
 
 	@RequestMapping(method = RequestMethod.POST, value = "/admins")
-	public ModelAndView addNewAdmin(
-//			@Valid @RequestBody AdminRegisterDTO adminDTO, BindingResult result
-			HttpServletRequest request
-			) {
+	public ModelAndView addNewAdmin(HttpServletRequest request) {
 		
 		AdminRegisterDTO adminDTO = new AdminRegisterDTO();
 		ModelAndView mav = new ModelAndView("/admin/register/admin");
@@ -140,30 +120,11 @@ public class UserRegistrationController {
 		request.setAttribute("adminRegisterSuccessMsg", "Admin je uspešno registrovan!");
 		
 		return mav;
-
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(adminDTO, result);
-//		
-//		AdminEntity admin = (AdminEntity) UserFactory.createUser(adminDTO);
-//		userRepository.save(admin);
-//		
-//		logger.info(admin.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/teachers")
-	public ModelAndView addNewTeacher(
-//			@Valid @RequestBody TeacherRegisterDTO teacherDTO, BindingResult result,
-			HttpServletRequest request
-			) {
+	public ModelAndView addNewTeacher(HttpServletRequest request) {
 		
 		TeacherRegisterDTO teacherDTO = new TeacherRegisterDTO();
 		ModelAndView mav = new ModelAndView("/admin/register/teacher");
@@ -191,34 +152,11 @@ public class UserRegistrationController {
 		request.setAttribute("teacherRegisterSuccessMsg", "Nastavnik je uspešno registrovan!");
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (teacherRepository.findByEmail(teacherDTO.getEmail()).isPresent())
-//			return new ResponseEntity<>("Email must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(teacherDTO, result);
-//			
-//		teacherDTO.setRole(EUserRole.TEACHER);
-//		
-//		TeacherEntity teacher = (TeacherEntity) UserFactory.createUser(teacherDTO);
-//		userRepository.save(teacher);
-//		
-//		logger.info(teacher.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(teacher, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/parents")
-	public ModelAndView addNewParent(
-//			@Valid @RequestBody ParentRegisterDTO parentDTO, 
-//			BindingResult result,
-			HttpServletRequest request) {
+	public ModelAndView addNewParent(HttpServletRequest request) {
 		
 		ParentRegisterDTO parentDTO = new ParentRegisterDTO();
 		ModelAndView mav = new ModelAndView("/admin/register/parent");
@@ -246,32 +184,11 @@ public class UserRegistrationController {
 		request.setAttribute("parentRegisterSuccessMsg", "Roditelj je uspešno registrovan!");
 		
 		return mav;
-
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (parentRepository.findByEmail(parentDTO.getEmail()).isPresent())
-//			return new ResponseEntity<>("Email must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(parentDTO, result);
-//		
-//		ParentEntity parent = (ParentEntity) UserFactory.createUser(parentDTO);
-//		userRepository.save(parent);
-//		
-//		logger.info(parent.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(parent, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/students")
-	public ModelAndView addNewStudent(
-//			@Valid @RequestBody StudentRegisterDTO studentDTO, BindingResult result
-			HttpServletRequest request) {
-
+	public ModelAndView addNewStudent(HttpServletRequest request) {
 
 		StudentRegisterDTO studentDTO = new StudentRegisterDTO();
 		ModelAndView mav = new ModelAndView("/admin/register/student");
@@ -299,30 +216,10 @@ public class UserRegistrationController {
 		request.setAttribute("studentRegisterSuccessMsg", "Učenik je uspešno registrovan!");
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (studentRepository.findByJmbg(studentDTO.getJmbg()).isPresent())
-//			return new ResponseEntity<>("Personal ID number must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(studentDTO, result);
-//		
-//		StudentEntity student = (StudentEntity) UserFactory.createUser(studentDTO);
-//		userRepository.save(student);
-//		
-//		logger.info(student.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(student, HttpStatus.OK);
 	}
 	
-
-	private String createErrorMessage(BindingResult result) {
-		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n"));
-	}
+	
+	// =-=-=-= AUX
 	
 	
 	private boolean verifyUser(HttpServletRequest request, EUserRole role, StringBuilder error) {

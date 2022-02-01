@@ -113,6 +113,7 @@ public class UserLoginController {
 					session.setAttribute("SPRING_SECURITY_CONTEXT", sc);
 					
 					request.getSession().setAttribute("user", userRepository.findByUsername(username).get());
+					request.getSession().setAttribute("role", userRole.toString().toLowerCase());
 					request.setAttribute("userLoginMsg", "Ulogovani ste kao : " + username);
 					
 					// sanity check
@@ -135,9 +136,7 @@ public class UserLoginController {
 		
 		request.setAttribute("userLoginMsg", "Korisnicko ime i lozinka moraju biti uneti i ispravni.");
 		
-		ModelAndView mav = new ModelAndView(path);
-		
-		return mav;
+		return new ModelAndView(path);
 	}
 	
 	

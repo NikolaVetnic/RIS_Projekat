@@ -77,8 +77,8 @@
 			</table>
 			
 			<br />
-			
 		</c:if>
+		
 		<a href="/api/v1/project/classes/list">Nazad na pregled svih odelenja</a>
 		<br />
 		<br />

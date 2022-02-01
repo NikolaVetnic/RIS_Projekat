@@ -77,8 +77,13 @@
 			
 		</form>
 		
-		<span class="success">${ lectureRegisterSuccessMsg }</span> <!--  NIJE URADJENO -->
-		<span class="error">${ lectureRegisterMsg }</span> <!--  NIJE URADJENO -->
+		<span class="success">${ lectureRegisterSuccessMsg }</span>
+		<span class="error">${ lectureRegisterMsg }</span>
+		
+		<br />
+		<a href="/api/v1/project/subjects/home">Nazad na glavnu stranicu za predmete</a>
+		<br />
+		<br />
 		
 	</div>
 	

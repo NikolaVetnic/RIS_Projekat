@@ -11,13 +11,33 @@
 </head>
 <body>
 
-	<h2 class="title2">NASTAVNIK : Glavna stranica</h2>
+	<div class="sidenav">
+		<a href="/api/v1/project/teacher/home" class="sidenav-sel">Glavna</a>
+		<br>
+		<a href="/">Izloguj se</a>
+	</div>
 
-	<p>Ulogovani ste kao : <span class="username">${ user.username } </span></p>
+	<div class="main">
+		<div class="header">
+			<h2 class="title2 p-class">NASTAVNIK : Glavna stranica</h2>
+			<p class="p-class">Ulogovani ste kao : <span class="username p-class">${ user.username } </span></p>
+		</div>
+		
+		<br />
+		
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id ligula efficitur nisl pulvinar accumsan in eget leo. Fusce eleifend sit amet libero eget faucibus. Nam ut sagittis velit, in malesuada quam. Mauris id congue nisl.</p>
+		
+		<h3>OPCIJE</h3>
+		<ul>
+			<li><a href="/api/v1/project/teacher/users">Pregled sopstvenih učenika</a></li>
+			<li><a href="/api/v1/project/lectures/list">Pregled sopstvenih predavanja</a></li>
+		</ul>
+		
+	</div>
 	
-	<ul>
-		<li><a href="/api/v1/project/teacher/grades">Pregled svih ocena</a></li>
-	</ul>
+	<div class="footer">
+	  	School System Project @ Razvoj informacionih sistema, 2021.
+	</div>
 	
 </body>
 </html>

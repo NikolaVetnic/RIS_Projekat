@@ -1,14 +1,10 @@
 package com.nv.schoolsystemproject.controllers;
 
-import java.util.stream.Collectors;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,9 +62,7 @@ public class UserUpdateController {
 		
 		request.getSession().setAttribute("adminToUpdate", adminToUpdate);
 		
-		ModelAndView mav = new ModelAndView("/admin/update/admin");
-		
-		return mav;
+		return new ModelAndView("/admin/update/admin");
 	}
 	
 	
@@ -82,9 +76,7 @@ public class UserUpdateController {
 
 		request.getSession().setAttribute("teacherToUpdate", teacherToUpdate);
 		
-		ModelAndView mav = new ModelAndView("/admin/update/teacher");
-		
-		return mav;
+		return new ModelAndView("/admin/update/teacher");
 	}
 	
 	
@@ -96,9 +88,7 @@ public class UserUpdateController {
 
 		request.getSession().setAttribute("parentToUpdate", parentToUpdate);
 		
-		ModelAndView mav = new ModelAndView("/admin/update/parent");
-		
-		return mav;
+		return new ModelAndView("/admin/update/parent");
 	}
 	
 	
@@ -110,9 +100,7 @@ public class UserUpdateController {
 
 		request.getSession().setAttribute("studentToUpdate", studentToUpdate);
 		
-		ModelAndView mav = new ModelAndView("/admin/update/student");
-		
-		return mav;
+		return new ModelAndView("/admin/update/student");
 	}
 	
 	
@@ -120,10 +108,7 @@ public class UserUpdateController {
 	
 
 	@RequestMapping(method = RequestMethod.POST, value = "/admins")
-	public ModelAndView updateAdmin(
-//			@Valid @RequestBody AdminRegisterDTO adminDTO, BindingResult result
-			HttpServletRequest request
-			) {
+	public ModelAndView updateAdmin(HttpServletRequest request) {
 		
 		AdminEntity adminEntity = (AdminEntity) request.getSession().getAttribute("adminToUpdate");
 		
@@ -146,30 +131,11 @@ public class UserUpdateController {
 				String.format("Admin %s je uspešno ažuriran!", adminEntity.getUsername()));
 		
 		return mav;
-
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//		
-//		if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(adminDTO, result);
-//		
-//		AdminEntity admin = (AdminEntity) UserFactory.createUser(adminDTO);
-//		userRepository.save(admin);
-//		
-//		logger.info(admin.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(admin, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/teachers")
-	public ModelAndView updateTeacher(
-//			@Valid @RequestBody TeacherRegisterDTO teacherDTO, BindingResult result,
-			HttpServletRequest request
-			) {
+	public ModelAndView updateTeacher(HttpServletRequest request) {
 
 		TeacherEntity teacherEntity = (TeacherEntity) request.getSession().getAttribute("teacherToUpdate");
 		
@@ -195,34 +161,11 @@ public class UserUpdateController {
 						teacherEntity.getFirstName(), teacherEntity.getLastName()));
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (teacherRepository.findByEmail(teacherDTO.getEmail()).isPresent())
-//			return new ResponseEntity<>("Email must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(teacherDTO, result);
-//			
-//		teacherDTO.setRole(EUserRole.TEACHER);
-//		
-//		TeacherEntity teacher = (TeacherEntity) UserFactory.createUser(teacherDTO);
-//		userRepository.save(teacher);
-//		
-//		logger.info(teacher.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(teacher, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/parents")
-	public ModelAndView updateParent(
-//			@Valid @RequestBody ParentRegisterDTO parentDTO, 
-//			BindingResult result,
-			HttpServletRequest request) {
+	public ModelAndView updateParent(HttpServletRequest request) {
 		
 		ParentEntity parentEntity = (ParentEntity) request.getSession().getAttribute("parentToUpdate");
 		
@@ -248,31 +191,11 @@ public class UserUpdateController {
 						parentEntity.getFirstName(), parentEntity.getLastName()));
 		
 		return mav;
-		
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (parentRepository.findByEmail(parentDTO.getEmail()).isPresent())
-//			return new ResponseEntity<>("Email must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(parentDTO, result);
-//		
-//		ParentEntity parent = (ParentEntity) UserFactory.createUser(parentDTO);
-//		userRepository.save(parent);
-//		
-//		logger.info(parent.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(parent, HttpStatus.OK);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/students")
-	public ModelAndView updateStudent(
-//			@Valid @RequestBody StudentRegisterDTO studentDTO, BindingResult result
-			HttpServletRequest request) {
+	public ModelAndView updateStudent(HttpServletRequest request) {
 
 		StudentEntity studentEntity = (StudentEntity) request.getSession().getAttribute("studentToUpdate");
 		
@@ -298,30 +221,10 @@ public class UserUpdateController {
 						studentEntity.getFirstName(), studentEntity.getLastName()));
 		
 		return mav;
-
-//		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-//			return new ResponseEntity<RESTError>(
-//					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-//
-//		if (studentRepository.findByJmbg(studentDTO.getJmbg()).isPresent())
-//			return new ResponseEntity<>("Personal ID number must be unique.", HttpStatus.BAD_REQUEST);
-//		else if (result.hasErrors())
-//			return new ResponseEntity<>(createErrorMessage(result), HttpStatus.BAD_REQUEST);
-//		else
-//			userValidator.validate(studentDTO, result);
-//		
-//		StudentEntity student = (StudentEntity) UserFactory.createUser(studentDTO);
-//		userRepository.save(student);
-//		
-//		logger.info(student.toString() + " : created.");
-//		
-//		return new ResponseEntity<>(student, HttpStatus.OK);
 	}
 	
-
-	private String createErrorMessage(BindingResult result) {
-		return result.getAllErrors().stream().map(ObjectError::getDefaultMessage).collect(Collectors.joining("\n"));
-	}
+	
+	// =-=-=-= AUX
 	
 	
 	private boolean verifyUser(HttpServletRequest request, EUserRole role, StringBuilder error) {

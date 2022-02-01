@@ -72,7 +72,7 @@ public class LectureEntity {
 	protected List<SessionEntity> sessions = new ArrayList<>();
 	
 	@JsonBackReference
-	@OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
+	@OneToMany(mappedBy = "lecture", fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
 	protected Set<GradeCardEntity> gradeCards = new TreeSet<>();
 
 	@Version

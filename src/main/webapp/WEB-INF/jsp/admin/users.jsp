@@ -91,9 +91,9 @@
 						</c:if>
 					</td>
 					<td width="10" />
-					<td>
+					<td class="table_cell">
 						<c:if test="${ u.role == 'STUDENT' }">
-							<a href="/api/v1/project/grade/grade_cards?idToUpdate=${ u.id }">Ocene</a>
+							<a href="/api/v1/project/grade/grade_cards?idToUpdate=${ u.id }">Ocene i izostanci</a>
 						</c:if>
 					</td>
 					<td width="10" />

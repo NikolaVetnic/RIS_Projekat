@@ -1,40 +1,32 @@
 package com.nv.schoolsystemproject.controllers;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.nv.schoolsystemproject.controllers.util.RESTError;
 import com.nv.schoolsystemproject.entities.AbsenceEntity;
 import com.nv.schoolsystemproject.entities.EUserRole;
 import com.nv.schoolsystemproject.entities.GradeCardEntity;
 import com.nv.schoolsystemproject.entities.GradeEntity;
-import com.nv.schoolsystemproject.entities.LectureEntity;
+import com.nv.schoolsystemproject.entities.ParentEntity;
 import com.nv.schoolsystemproject.entities.SessionEntity;
 import com.nv.schoolsystemproject.entities.StudentEntity;
 import com.nv.schoolsystemproject.entities.UserEntity;
+import com.nv.schoolsystemproject.models.EmailObject;
 import com.nv.schoolsystemproject.repositories.AbsenceRepository;
 import com.nv.schoolsystemproject.repositories.GradeCardRepository;
 import com.nv.schoolsystemproject.repositories.GradeRepository;
 import com.nv.schoolsystemproject.repositories.SessionRepository;
 import com.nv.schoolsystemproject.repositories.StudentRepository;
-import com.nv.schoolsystemproject.repositories.UserRepository;
-import com.nv.schoolsystemproject.services.UserServiceImpl;
+import com.nv.schoolsystemproject.services.EmailService;
 
 @RestController
 @RequestMapping(path = "/api/v1/project/grade")
@@ -49,9 +41,8 @@ public class GradeController {
 	@Autowired private GradeRepository gradeRepository;
 	@Autowired private SessionRepository sessionRepository;
 	@Autowired private StudentRepository studentRepository;
-	@Autowired private UserRepository userRepository;
 	
-	@Autowired private UserServiceImpl userServiceImpl;
+	@Autowired private EmailService emailService;
 	
 	
 	// =-=-=-= GET : ROUTES
@@ -61,13 +52,14 @@ public class GradeController {
 	public ModelAndView getStudentForGradeCards(HttpServletRequest request) {
 
 		Integer id = Integer.parseInt((String) request.getParameter("idToUpdate"));
+		StudentEntity student = studentRepository.findById(id).get();
 		
-		request.getSession().setAttribute("student", studentRepository.findById(id).get());
+		request.getSession().setAttribute("student", student);
 		request.getSession().setAttribute("intArray5", new int[] { 1, 2, 3, 4, 5 });
 		
-		ModelAndView mav = new ModelAndView("/admin/grade_cards/grade_cards");
+		setGradeCardsAsRequestAttribute(request, student);
 		
-		return mav;
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/grade_cards/grade_cards");
 	}
 	
 	
@@ -77,31 +69,21 @@ public class GradeController {
 		Integer id = Integer.parseInt((String) request.getParameter("idToUpdate"));
 		request.getSession().setAttribute("absence", absenceRepository.findById(id).get());
 		
-		ModelAndView mav = new ModelAndView("/admin/grade_cards/absence_note");
-		
-		return mav;
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/grade_cards/absence_note");
 	}
 	
 	
 	@RequestMapping(path = "/get_students_for_absences", method = RequestMethod.GET) 
 	public ModelAndView getStudentsForAbsences(HttpServletRequest request) {
 		
-		Integer id = Integer.parseInt((String) request.getParameter("sessionId"));
-		
-		SessionEntity session = sessionRepository.findById(id).get();
-		LectureEntity lecture = session.getLecture(); 
-		
-		List<StudentEntity> students = (List<StudentEntity>) studentRepository.findAll();
-		
-		students = students.stream()
-			.filter(s -> s.isTakingLecture(lecture.getId()))
-			.filter(s -> !s.hasAbsenceForSession(session))
-			.collect(Collectors.toList());
+		SessionEntity session = sessionRepository.findById(
+				Integer.parseInt((String) request.getParameter("sessionId"))).get();
 		
 		request.getSession().setAttribute("selectedSession", session);
-		request.getSession().setAttribute("students", students);
+		request.getSession().setAttribute("students", 
+				studentRepository.findBySessionWithoutAbsence(session.getLecture(), session.getDate()));
 		
-		return new ModelAndView("/admin/sessions/students");
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/sessions/students");
 	}
 	
 	
@@ -117,11 +99,14 @@ public class GradeController {
 		GradeEntity grade = gradeRepository.findById(id).get();
 		grade.setGrade(newGrade);
 		gradeRepository.save(grade);
-
-		request.getSession().setAttribute("student", 
-				studentRepository.findById(grade.getGradeCard().getStudent().getId()).get());
 		
-		return new ModelAndView("/admin/grade_cards/grade_cards");
+		StudentEntity student = studentRepository.findById(grade.getGradeCard().getStudent().getId()).get();
+
+		request.getSession().setAttribute("student", student);
+		
+		setGradeCardsAsRequestAttribute(request, student);
+		
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/grade_cards/grade_cards");
 	}
 	
 	
@@ -137,13 +122,9 @@ public class GradeController {
 		absence.setNote(absence_note);
 		absenceRepository.save(absence);
 		
-		List<UserEntity> users = StreamSupport
-				  .stream(userRepository.findAll().spliterator(), false)
-				  .collect(Collectors.toList());
+		setStudentsAsRequestAttribute(request);
 		
-		request.setAttribute("users", users);
-		
-		return new ModelAndView("/admin/users");
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/users");
 	}
 	
 	
@@ -154,13 +135,7 @@ public class GradeController {
 		
 		StudentEntity student = studentRepository.findById(id).get();
 		SessionEntity session = (SessionEntity) request.getSession().getAttribute("selectedSession");
-		
-		System.out.println("lectureID ::: " + session.getLecture().getId());
-		System.out.println(student);
-		
-		GradeCardEntity gradeCard = student.getGradeCards().stream()
-				.filter(gc -> gc.getLecture().getId() == session.getLecture().getId())
-				.findFirst().get();
+		GradeCardEntity gradeCard = gradeCardRepository.findByLectureAndStudent(session.getLecture(), student).get();
 		
 		AbsenceEntity absence = new AbsenceEntity();
 		
@@ -170,94 +145,91 @@ public class GradeController {
 		
 		absenceRepository.save(absence);
 		
+		request.setAttribute("sessions", sessionRepository.findByLectureOrderByDate(session.getLecture()));
 		
+		notifyParentOfAbsence(student, session);
 		
-		
-		request.setAttribute("sessions", ((List<SessionEntity>) sessionRepository.findAll()).stream()
-				.filter(s -> s.getLecture().getId() == session.getLecture().getId())
-				.sorted(new Comparator<SessionEntity>() {
-				@Override public int compare(SessionEntity o1, SessionEntity o2) {
-					return o1.getDate().compareTo(o2.getDate());
-				}
-			}).collect(Collectors.toList()));
-		
-		
-		
-		return new ModelAndView("/admin/sessions/list");
-	}
-	
-	
-	// =-=-=-= PUT =-=-=-=
-	
-	
-	@RequestMapping(method = RequestMethod.PUT, value = "/update/{id}/{grade}")
-	public ResponseEntity<?> update(@PathVariable Integer id, @PathVariable Integer grade) {
-		
-		// if grade is invalid return
-		if (!(0 < grade && grade <= 5))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.BAD_REQUEST.value(), "Invalid grade."), HttpStatus.BAD_REQUEST);
-		
-		Optional<GradeEntity> gradeOpt = gradeRepository.findById(id);
-		
-		if (!gradeOpt.isPresent())
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.NOT_FOUND.value(), "Grade not found."), HttpStatus.NOT_FOUND);
-		
-		GradeEntity gradeEntity = gradeOpt.get();
-		
-		boolean isAdmin = userServiceImpl.isAuthorizedAs(EUserRole.ADMIN);
-		boolean isTeacher = userServiceImpl.getLoggedInUsername().isPresent() && 
-							userServiceImpl.getLoggedInUsername().get().equals(gradeEntity.getGradeCard().getLecture().getTeacher().getUsername());
-		
-		if (!isAdmin && !isTeacher)
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
-		
-		gradeEntity.setGrade(grade);
-		
-		gradeRepository.save(gradeEntity);
-		
-		logger.info("Grade #" + gradeEntity.getId() + " : updated.");
-		
-		return new ResponseEntity<>(gradeEntity, HttpStatus.OK);
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/sessions/list");
 	}
 	
 	
 	// =-=-=-= DELETE =-=-=-=
 	
 	
-	@RequestMapping(method = RequestMethod.DELETE, value ="/{id}")
-	public ResponseEntity<?> delete(@PathVariable Integer id) {
+	@RequestMapping(method = RequestMethod.GET, value = "/delete")
+	public ModelAndView delete(HttpServletRequest request) {
 		
-		if (!userServiceImpl.isAuthorizedAs(EUserRole.ADMIN))
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request."), HttpStatus.UNAUTHORIZED);
+		Integer gradeCardId = Integer.parseInt(request.getParameter("gradeCardId"));
+		GradeCardEntity gradeCardEntity = gradeCardRepository.findById(gradeCardId).get();
 		
-		try {
+		Integer gradeId = Integer.parseInt(request.getParameter("gradeId"));
+		GradeEntity gradeEntity = gradeRepository.findById(gradeId).get();
+		
+		gradeRepository.delete(gradeEntity);
+		
+		setGradeCardsAsRequestAttribute(request, gradeCardEntity.getStudent());
+		
+		return new ModelAndView("/" + request.getSession().getAttribute("role") + "/grade_cards/grade_cards");
+	}
+	
+	
+	// =-=-=-= AUX
+	
+	
+	private void notifyParentOfAbsence(StudentEntity student, SessionEntity session) {
+
+		EmailObject emailObject = new EmailObject();
+		emailObject.setSubject(String.format("%s %s - izostanak sa lekcije '%s' iz predmeta '%s'", 
+				student.getLastName(), student.getFirstName(), 
+				session.getTopic(),
+				session.getLecture().getSubject().getName()));
+		
+		emailObject.setText(String.format("Vaše dete je danas izostalo sa lekcije '%s' iz predmeta '%s'.", 
+				session.getTopic(), session.getLecture().getSubject().getName()));
+		
+		if (!student.getParents().isEmpty()) {
 			
-			Optional<GradeEntity> gradeOpt = gradeRepository.findById(id);
+			Iterator<ParentEntity> value = student.getParents().iterator();
 			
-			if (!gradeOpt.isPresent())
-				return new ResponseEntity<RESTError>(
-						new RESTError(HttpStatus.NOT_FOUND.value(), "Grade not found."), HttpStatus.NOT_FOUND);
+			while (value.hasNext()) {
+				
+				ParentEntity parent = value.next();
+				
+				emailObject.setTo(parent.getEmail());
+				emailService.sendSimpleMessage(emailObject);
+				
+				logger.info("Lecture #" + session.getLecture().getId() + " : parent notified of absence.");
+	        }
 			
-			GradeEntity grade = gradeOpt.get();
+		} else {
 			
-			GradeCardEntity gc = grade.getGradeCard();
-			gc.getGrades().remove(grade);
-			gradeCardRepository.save(gc);
-			
-			gradeRepository.delete(grade);
-			
-			logger.info("Grade #" + grade.getId() + " : deleted.");
-			
-			return new ResponseEntity<GradeEntity>(grade, HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity<RESTError>(
-					new RESTError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error. Error: " + e.getMessage()), 
-					HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.info("Lecture #" + session.getLecture().getId() + " : parent not found.");
 		}
+	}
+	
+	
+	private void setGradeCardsAsRequestAttribute(HttpServletRequest request, StudentEntity student) {
+		
+		UserEntity currUser = (UserEntity) request.getSession().getAttribute("user");
+		
+		if (currUser.getRole() == EUserRole.TEACHER)
+			request.getSession().setAttribute("gradeCards", 
+					gradeCardRepository.findAllByStudentAndTeacher(student, currUser.getUsername()));
+		else
+			request.getSession().setAttribute("gradeCards", 
+					student.getGradeCards());
+	}
+	
+	
+	private void setStudentsAsRequestAttribute(HttpServletRequest request) {
+		
+		UserEntity currUser = (UserEntity) request.getSession().getAttribute("user");
+		
+		if (currUser.getRole() == EUserRole.TEACHER)
+			request.setAttribute("users", studentRepository.findByTeacher(currUser.getUsername()));
+		else if (currUser.getRole() == EUserRole.PARENT)
+			request.setAttribute("users", studentRepository.findByParent(currUser.getUsername()));
+		else
+			request.setAttribute("users", studentRepository.findAll());
 	}
 }

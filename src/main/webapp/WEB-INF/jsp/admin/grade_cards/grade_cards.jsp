@@ -22,13 +22,19 @@
 
 	<div class="main">
 		<div class="header">
-			<h2 class="title2 p-class">ADMIN : Pregled ocena (učenik ${ student.lastName } ${ student.firstName })</h2>
+			<h2 class="title2 p-class">ADMIN : Pregled ocena i izostanaka (učenik ${ student.lastName } ${ student.firstName })</h2>
 			<p class="p-class">Ulogovani ste kao : <span class="username p-class">${ user.username } </span></p>
 		</div>
 		
 		<br />
 		
-		<c:forEach items="${ student.gradeCards }" var="gc">
+		<c:if test="${ empty gradeCards }">
+			<br />
+			Učenik nije dodat ni na jedan predmet.
+			<br />
+		</c:if>
+		
+		<c:forEach items="${ gradeCards }" var="gc">
 		
 			<h3>${ gc.lecture.subject.name } (nastavnik ${ gc.lecture.teacher.lastName } ${ gc.lecture.teacher.firstName })</h3>
 			<blockquote>
@@ -47,6 +53,9 @@
 										<td width="10" /> 
 									</c:forEach>
 									
+									<td><a href="/api/v1/project/grade/delete?gradeCardId=${ gc.id }&gradeId=${ g.id }">Obriši ocenu</a></td>
+									<td width="10" />
+									
 								</tr>
 							</c:forEach>
 						</table>
@@ -58,7 +67,7 @@
 							<tr>
 								<td>${ ab.date }</td>
 								<td width="10" />
-								<td>
+								<td width="500" >
 									<c:if test="${ !empty ab.note }">
 										${ ab.note }
 									</c:if>
@@ -76,9 +85,11 @@
 				</blockquote>
 			</blockquote>
 			
+			<hr>
+			
 		</c:forEach>
 		<br />
-		<a href="/api/v1/project/admin/users">Nazad na pregled korisnika</a> 
+		<a href="/api/v1/project/${ role }/users">Nazad na pregled korisnika</a> 
 		<br />
 		<br />
 		<br />

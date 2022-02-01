@@ -52,6 +52,12 @@
 		<span class="success">${ sessionRegisterSuccessMsg }</span>
 		<span class="error">${ sessionRegisterMsg }</span>
 		
+		<br />
+		<a href="/api/v1/project/sessions/list?idToUpdate=${ selectedLecture.id }">Nazad na pregled sesija</a>
+		<br />
+		<br />
+		<br />
+		
 	</div>
 	
 	<div class="footer">

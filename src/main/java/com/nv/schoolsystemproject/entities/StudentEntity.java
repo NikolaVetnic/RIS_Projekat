@@ -12,6 +12,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -67,27 +68,15 @@ public class StudentEntity extends UserEntity {
 	
 	@JsonBackReference
 	@OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = { CascadeType.REFRESH })
+	@OrderBy("lecture")
 	protected Set<GradeCardEntity> gradeCards = new HashSet<>();
 	
 	public boolean isTakingLecture(Integer id) {
 		
 		for (GradeCardEntity gradeCard : gradeCards)
-			if (gradeCard.getLecture().getId() == id)
+			if (gradeCard.getLecture().getId().equals(id))
 				return true;
 		
-		return false;
-	}
-	
-	public boolean hasAbsenceForSession(SessionEntity session) {
-		
-		GradeCardEntity gradeCard = gradeCards.stream()
-				.filter(gc -> gc.getLecture().getId() == session.getLecture().getId())
-				.findFirst().get();
-		
-		for (AbsenceEntity absence : gradeCard.getAbsences())
-			if (absence.getDate().equals(session.getDate()))
-				return true;
-			
 		return false;
 	}
 }
