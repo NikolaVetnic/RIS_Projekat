@@ -27,7 +27,7 @@
 		
 		<c:forEach items="${ gradeCards }" var="gc">
 		
-			<h3>${ gc.lecture.subject.name }</h3>
+			<h3>${ gc.lecture.subject.name } (nastavnik ${ gc.lecture.teacher.lastName } ${ gc.lecture.teacher.firstName })</h3>
 			<blockquote>
 				Ocene : 
 					<blockquote>
@@ -49,6 +49,16 @@
 									
 								</tr>
 							</c:forEach>
+							
+							<tr>
+								<td>[${ gc.average() }]</td>
+								<td width="10" />
+								<td>AVG</td>
+								<td width="10" />
+								<td></td>
+								<td width="10" />
+							</tr>
+							
 						</table>
 					</blockquote>
 				<p>Izostanci :</p>
@@ -79,6 +89,16 @@
 			<hr>
 			
 		</c:forEach>
+		
+		<table>
+			<tr>
+				<td width="400" >Prosek učenika na SVIM predmetima</td>
+				<td>[ ${ student.average() } ]</td>
+			</tr>
+		</table>
+		
+		<hr>
+		
 		<br />
 		<a href="/api/v1/project/${ role }/users">Nazad na pregled učenika</a> 
 		<br />

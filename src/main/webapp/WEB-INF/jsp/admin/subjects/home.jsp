@@ -38,6 +38,10 @@
 			<li><a href="/api/v1/project/subjects/register_subject">Registracija predmeta</a></li>
 			<li><a href="/api/v1/project/lectures/register_lecture">Registracija predavanja</a></li>
 		</ul>
+		<h3>IZVEŠTAJI</h3>
+		<ul>
+			<li><a href="/api/v1/project/subjects/all_subjects_report">Generisanje spiska predmeta</a></li>
+		</ul>
 	</div>
 	
 	<div class="footer">

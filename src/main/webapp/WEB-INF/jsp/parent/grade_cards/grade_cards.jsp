@@ -34,11 +34,31 @@
 						<table action="/api/v1/project/grade/update_grade" method="post">
 							<c:forEach items="${ gc.grades }" var="g">
 								<tr>
-									<td>[ ${ g.grade } ] :: datum ocenjivanja ${ g.date }</td>
+									<td>[ ${ g.grade } ]</td>
+									<td width="10" />
+									
+									<c:forEach items="${ intArray5 }" var="num">
+										<td>
+											<a href="/api/v1/project/grade/update_grade?gradeId=${ g.id }&newGrade=${ num }">-> ${ num }</a>
+										</td>
+										<td width="10" /> 
+									</c:forEach>
+									
+									<td><a href="/api/v1/project/grade/delete?gradeCardId=${ gc.id }&gradeId=${ g.id }">Obriši ocenu</a></td>
 									<td width="10" />
 									
 								</tr>
 							</c:forEach>
+							
+							<tr>
+								<td>[${ gc.average() }]</td>
+								<td width="10" />
+								<td>AVG</td>
+								<td width="10" />
+								<td></td>
+								<td width="10" />
+							</tr>
+							
 						</table>
 					</blockquote>
 				<p>Izostanci :</p>
@@ -69,6 +89,16 @@
 			<hr>
 			
 		</c:forEach>
+		
+		<table>
+			<tr>
+				<td width="200" >Prosek učenika</td>
+				<td>[ ${ student.average() } ]</td>
+			</tr>
+		</table>
+		
+		<hr>
+		
 		<br />
 		<a href="/api/v1/project/${ role }/users">Nazad na pregled učenika</a> 
 		<br />

@@ -1,10 +1,15 @@
 package com.nv.schoolsystemproject.controllers;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +33,13 @@ import com.nv.schoolsystemproject.repositories.SubjectRepository;
 import com.nv.schoolsystemproject.repositories.TeacherRepository;
 import com.nv.schoolsystemproject.services.UserServiceImpl;
 import com.nv.schoolsystemproject.utils.SubjectCustomValidator;
+
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @RestController
 @RequestMapping(path = "/api/v1/project/subjects")
@@ -153,6 +165,30 @@ public class SubjectController {
 				String.format("Predmet %s je uspešno ažuriran!", subject.getName()));
 		
 		return mav;
+	}
+	
+	
+	// =-=-=-= REPORT
+	
+	
+	@RequestMapping(path = "/all_subjects_report", method = RequestMethod.GET)
+	public void getAllSubjectsReport(HttpServletResponse response) throws Exception{
+		
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(((List<SubjectEntity>) subjectRepository.findAll()));
+		InputStream inputStream = this.getClass().getResourceAsStream("/jasperreports/SviPredmetiReport.jrxml");
+		JasperReport jasperReport = JasperCompileManager.compileReport(inputStream);
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("imeSkole", "Moja škola");
+		
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, dataSource);
+		inputStream.close();
+		
+		response.setContentType("application/x-download");
+		response.addHeader("Content-disposition", "attachment; filename=SviPredmeti.pdf");
+		
+		OutputStream out = response.getOutputStream();
+		JasperExportManager.exportReportToPdfStream(jasperPrint,out);
 	}
 	
 	

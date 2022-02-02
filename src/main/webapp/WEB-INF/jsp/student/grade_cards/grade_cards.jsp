@@ -34,11 +34,31 @@
 						<table action="/api/v1/project/grade/update_grade" method="post">
 							<c:forEach items="${ gc.grades }" var="g">
 								<tr>
-									<td>[ ${ g.grade } ] :: datum ocenjivanja ${ g.date }</td>
+									<td>[ ${ g.grade } ]</td>
+									<td width="10" />
+									
+									<c:forEach items="${ intArray5 }" var="num">
+										<td>
+											<a href="/api/v1/project/grade/update_grade?gradeId=${ g.id }&newGrade=${ num }">-> ${ num }</a>
+										</td>
+										<td width="10" /> 
+									</c:forEach>
+									
+									<td><a href="/api/v1/project/grade/delete?gradeCardId=${ gc.id }&gradeId=${ g.id }">Obriši ocenu</a></td>
 									<td width="10" />
 									
 								</tr>
 							</c:forEach>
+							
+							<tr>
+								<td>[${ gc.average() }]</td>
+								<td width="10" />
+								<td>AVG</td>
+								<td width="10" />
+								<td></td>
+								<td width="10" />
+							</tr>
+							
 						</table>
 					</blockquote>
 				<p>Izostanci :</p>
@@ -56,6 +76,10 @@
 										Nema opravdanja.
 									</c:if>
 								</td>
+								<td width="10" />
+								<td>
+									<a href="/api/v1/project/grade/get_absence?idToUpdate=${ ab.id }">Ažuriraj opravdanje</a>
+								</td>
 							</tr>
 						</c:forEach>
 					</table>
@@ -65,6 +89,16 @@
 			<hr>
 			
 		</c:forEach>
+		
+		<table>
+			<tr>
+				<td width="200" >Prosek učenika</td>
+				<td>[ ${ student.average() } ]</td>
+			</tr>
+		</table>
+		
+		<hr>
+		
 		<br />
 		<a href="/api/v1/project/student/home">Nazad na glavnu</a> 
 		<br />

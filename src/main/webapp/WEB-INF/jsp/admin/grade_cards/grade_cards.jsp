@@ -58,6 +58,16 @@
 									
 								</tr>
 							</c:forEach>
+							
+							<tr>
+								<td>[${ gc.average() }]</td>
+								<td width="10" />
+								<td>AVG</td>
+								<td width="10" />
+								<td></td>
+								<td width="10" />
+							</tr>
+							
 						</table>
 					</blockquote>
 				<p>Izostanci :</p>
@@ -88,6 +98,16 @@
 			<hr>
 			
 		</c:forEach>
+		
+		<table>
+			<tr>
+				<td width="200" >Prosek učenika</td>
+				<td>[ ${ student.average() } ]</td>
+			</tr>
+		</table>
+		
+		<hr>
+		
 		<br />
 		<a href="/api/v1/project/${ role }/users">Nazad na pregled korisnika</a> 
 		<br />

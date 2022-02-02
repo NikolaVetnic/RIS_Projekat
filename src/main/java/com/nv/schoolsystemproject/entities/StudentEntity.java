@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.nv.schoolsystemproject.utils.MathUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -78,5 +79,11 @@ public class StudentEntity extends UserEntity {
 				return true;
 		
 		return false;
+	}
+	
+	public double average() {
+		return MathUtils.round(gradeCards.stream()
+				.mapToDouble(gc -> gc.average())
+				.average().orElse(0.0), 2);
 	}
 }

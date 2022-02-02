@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.nv.schoolsystemproject.utils.MathUtils;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,5 +86,11 @@ public class GradeCardEntity implements Comparable<GradeCardEntity> {
 		String f1 = o.getStudent().getFirstName();
 		
 		return l0.compareTo(l1) != 0 ? l0.compareTo(l1) : f0.compareTo(f1);
+	}
+	
+	public double average() {
+		return MathUtils.round(grades.stream()
+				.mapToDouble(GradeEntity::getGrade)
+				.average().orElse(0.0), 1);
 	}
 }
